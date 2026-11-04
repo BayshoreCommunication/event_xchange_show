@@ -71,7 +71,7 @@ export default function Newsletter() {
             <div className="relative w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
                     {/* ================= LEFT COLUMN: HEADLINE ================= */}
-                    <div className="lg:col-span-6 xl:col-span-6">
+                    <div className="lg:col-span-6 xl:col-span-6 text-center lg:text-left">
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -90,16 +90,16 @@ export default function Newsletter() {
                     </div>
 
                     {/* ================= RIGHT COLUMN: COPY & FORM ================= */}
-                    <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center">
+                    <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-                            className="max-w-[500px]"
+                            className="w-full max-w-[500px] flex flex-col items-center lg:items-start"
                         >
                             {/* Explanatory description */}
-                            <p className="text-xs sm:text-[13px] md:text-sm text-gray-200 leading-relaxed">
+                            <p className="text-xs sm:text-[13px] md:text-sm text-gray-200 leading-relaxed text-center lg:text-left">
                                 One useful idea from each week&apos;s episode, followed
                                 <br className="hidden sm:inline" />
                                 {" "}by a clear invitation to listen. That&apos;s it.
@@ -144,7 +144,7 @@ export default function Newsletter() {
                             </form>
 
                             {/* Disclaimer / reassurance below input */}
-                            <p className="mt-3 text-[11px] sm:text-xs text-[#6e859b]">
+                            <p className="mt-3 text-[11px] sm:text-xs text-[#6e859b] text-center lg:text-left">
                                 No sales follow-ups. Unsubscribe anytime.
                             </p>
                         </motion.div>

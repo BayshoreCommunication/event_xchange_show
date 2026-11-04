@@ -168,7 +168,7 @@ export default function Podcast() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
           
           {/* Left Column: Heading, description, and CTAs */}
-          <div className="lg:col-span-5 xl:col-span-5">
+          <div className="lg:col-span-5 xl:col-span-5 text-center lg:text-left flex flex-col items-center lg:items-start">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -189,7 +189,7 @@ export default function Podcast() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-              className="mt-5 sm:mt-6 text-sm sm:text-[15px] text-[#8fa7be] leading-relaxed max-w-lg"
+              className="mt-5 sm:mt-6 text-sm sm:text-[15px] text-[#8fa7be] leading-relaxed max-w-lg mx-auto lg:mx-0"
             >
               Come for someone else&apos;s story. Leave with a fresh perspective on your own work.
               For corporate and association planners, early-career professionals and seasoned
@@ -204,7 +204,7 @@ export default function Podcast() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
-              className="mt-7 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4"
+              className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
             >
               <Link
                 href="#explore"

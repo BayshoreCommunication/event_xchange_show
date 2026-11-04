@@ -78,7 +78,7 @@ export default function Hero3() {
       <div className="relative w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-12 sm:pt-16 lg:pt-24 pb-8 sm:pb-16 lg:pb-24 z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 items-center">
           {/* Left Column: Heading & Action Buttons */}
-          <div className="lg:col-span-7 xl:col-span-6 z-20">
+          <div className="lg:col-span-7 xl:col-span-6 z-20 text-center lg:text-left flex flex-col items-center lg:items-start">
             {/* Main Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
@@ -103,7 +103,7 @@ export default function Hero3() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-              className="mt-7 sm:mt-9 lg:mt-11 flex flex-wrap items-center gap-3.5 sm:gap-4"
+              className="mt-7 sm:mt-9 lg:mt-11 flex flex-wrap items-center justify-center lg:justify-start gap-3.5 sm:gap-4"
             >
               <Link
                 href="#explore"

@@ -44,7 +44,7 @@ export default function Industry() {
 
             {/* ---------------- MAIN CONTENT ---------------- */}
             <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-                <div className="max-w-xl lg:max-w-2xl flex flex-col justify-center">
+                <div className="max-w-xl lg:max-w-2xl flex flex-col justify-center text-center lg:text-left items-center lg:items-start mx-auto lg:mx-0">
                     {/* Heading */}
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
@@ -70,7 +70,7 @@ export default function Industry() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-                        className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[420px]"
+                        className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[420px] mx-auto lg:mx-0"
                     >
                         Experienced colleagues, not keynote speakers. They ask the
                         questions planners actually want answered.
@@ -82,7 +82,7 @@ export default function Industry() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
-                        className="mt-7 sm:mt-9 flex flex-wrap items-center gap-3 sm:gap-4"
+                        className="mt-7 sm:mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
                     >
                         {/* Primary Button */}
                         <Link

@@ -95,7 +95,7 @@ export default function Conversation() {
 
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-center">
                         {/* ================= LEFT COLUMN ================= */}
-                        <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center">
+                        <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-center lg:text-left items-center lg:items-start">
                             {/* Heading */}
                             <motion.h2
                                 initial={{ opacity: 0, y: 20 }}
@@ -119,7 +119,7 @@ export default function Conversation() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-                                className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[460px]"
+                                className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[460px] mx-auto lg:mx-0"
                             >
                                 Experienced colleagues, not keynote speakers. Our hosts know the pressures, moving
                                 parts, and last-minute decisions that come with planning an event. They bring that
@@ -134,7 +134,7 @@ export default function Conversation() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
-                                className="mt-7 sm:mt-9 flex flex-wrap items-center gap-3 sm:gap-4"
+                                className="mt-7 sm:mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
                             >
                                 <Link
                                     href="#episodes"

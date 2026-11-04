@@ -47,7 +47,7 @@ export default function Footer() {
                                 alt="The Event Xchange Show"
                                 width={180}
                                 height={117}
-                                className="w-36 sm:w-44 md:w-48 h-auto object-contain "
+                                className="w-36 sm:w-44 md:w-48 h-auto object-contain"
                             />
                         </Link>
                     </div>
@@ -83,9 +83,24 @@ export default function Footer() {
                     <p className="text-center sm:text-left">
                         {currentYear} The Event Exchange Show- Where Planning Meets Production
                     </p>
-                    <p className="text-center sm:text-right text-gray-400 hover:text-gray-200 transition-colors">
-                        Powered by <span className="font-medium text-gray-300">DXG</span>
-                    </p>
+                    <div className="flex items-center justify-center sm:justify-end gap-2 text-gray-400">
+                        <span>Powered by</span>
+                        <Link
+                            href="https://www.dxg.agency"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Digital Xperience Group"
+                            className="inline-flex items-center hover:opacity-80 transition-opacity"
+                        >
+                            <Image
+                                src="/images/home/footer/dxg-logo.png"
+                                alt="DXG - Digital Xperience Group"
+                                width={68}
+                                height={28}
+                                className="h-5 sm:h-6 w-auto object-contain"
+                            />
+                        </Link>
+                    </div>
                 </div>
             </div>
         </footer>
