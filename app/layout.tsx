@@ -22,7 +22,7 @@ const switzer = localFont({
   display: "swap",
 });
 
-const siteUrl = "https://www.dxg.agency";
+const siteUrl = "https://event-xchange-show.vercel.app/";
 
 /* ---------------- METADATA ---------------- */
 

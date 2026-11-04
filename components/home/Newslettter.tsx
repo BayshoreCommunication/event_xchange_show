@@ -132,6 +132,8 @@ export default function Newsletter() {
                                 {/* Success message */}
                                 {isSubmitted && (
                                     <motion.p
+                                        role="status"
+                                        aria-live="polite"
                                         initial={{ opacity: 0, y: -6 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className="mt-2 text-xs sm:text-[13px] text-[#00F0FF] font-medium"
@@ -152,4 +154,3 @@ export default function Newsletter() {
         </section>
     );
 }
-
