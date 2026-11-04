@@ -105,37 +105,58 @@ export default function Podcast() {
   };
 
   return (
-    <section className="relative w-full bg-[#020813] text-white py-14 sm:py-20 lg:py-24 overflow-hidden">
-      {/* ---------------- ATMOSPHERIC GRADIENTS (EXACT TO SCREENSHOT) ---------------- */}
-      {/* 1. Large vibrant cyan-teal glow at top right behind the featured card */}
+    <section className="relative w-full bg-[#02121c] text-white py-8 sm:py-16 lg:py-24 overflow-hidden">
+      {/* ---------------- ATMOSPHERIC GRADIENTS (EXACT TO REFERENCE SCREENSHOT) ---------------- */}
+      {/* 1. Base dark teal wash across entire section */}
       <div
-        className="pointer-events-none absolute -top-16 right-0 w-[550px] sm:w-[700px] lg:w-[850px] h-[550px] sm:h-[700px] lg:h-[850px] rounded-full"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 75% 25%, rgba(0, 194, 255, 0.18) 0%, rgba(2, 246, 248, 0.12) 30%, rgba(3, 30, 55, 0.08) 60%, transparent 75%)",
+            "radial-gradient(120% 100% at 85% 35%, rgba(0, 150, 190, 0.16) 0%, rgba(2, 26, 42, 0.6) 50%, rgba(2, 18, 28, 0.95) 85%, #02121c 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* 2. Vibrant, tall cyan-teal aura along the entire middle-right edge (exact to screenshot) */}
+      <div
+        className="pointer-events-none absolute top-0 -right-16 sm:-right-12 lg:-right-6 w-[450px] sm:w-[600px] lg:w-[750px] xl:w-[850px] h-full"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 65% at 100% 40%, rgba(0, 220, 245, 0.32) 0%, rgba(0, 160, 200, 0.2) 32%, rgba(2, 50, 80, 0.08) 60%, transparent 85%)",
+          filter: "blur(40px)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* 3. Vibrant cyan-teal aura at top left behind heading */}
+      <div
+        className="pointer-events-none absolute -top-12 -left-16 sm:-left-10 w-[500px] sm:w-[650px] lg:w-[750px] h-[450px] sm:h-[550px] lg:h-[650px] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at 35% 35%, rgba(0, 215, 235, 0.24) 0%, rgba(0, 140, 180, 0.14) 38%, rgba(2, 40, 65, 0.05) 60%, transparent 75%)",
+          filter: "blur(50px)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* 4. Soft atmospheric cyan-blue aura behind featured card */}
+      <div
+        className="pointer-events-none absolute top-8 right-1/4 w-[450px] sm:w-[600px] h-[380px] sm:h-[480px] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(0, 180, 220, 0.14) 0%, rgba(2, 246, 248, 0.05) 40%, transparent 70%)",
           filter: "blur(60px)",
         }}
         aria-hidden="true"
       />
 
-      {/* 2. Soft atmospheric deep blue aura behind left heading */}
+      {/* 5. Subtle bottom-right depth glow */}
       <div
-        className="pointer-events-none absolute top-10 -left-20 w-[420px] sm:w-[580px] h-[420px] sm:h-[580px] rounded-full"
+        className="pointer-events-none absolute bottom-0 right-10 w-[500px] sm:w-[650px] h-[380px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at center, rgba(0, 140, 220, 0.12) 0%, rgba(2, 246, 248, 0.04) 40%, transparent 70%)",
+            "radial-gradient(circle at center, rgba(0, 160, 200, 0.09) 0%, transparent 65%)",
           filter: "blur(70px)",
-        }}
-        aria-hidden="true"
-      />
-
-      {/* 3. Subtle bottom center depth glow */}
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/3 w-[500px] h-[350px] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at center, rgba(2, 246, 248, 0.05) 0%, transparent 65%)",
-          filter: "blur(80px)",
         }}
         aria-hidden="true"
       />
@@ -209,7 +230,7 @@ export default function Podcast() {
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7 xl:col-span-7"
           >
-            <div className="relative group bg-[#091829]/75 hover:bg-[#0c1e33]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 transition-all duration-300 shadow-[0_15px_40px_rgba(0,0,0,0.55)]">
+            <div className="relative group bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 transition-all duration-300 shadow-[0_15px_40px_rgba(0,0,0,0.55)]">
               <div className="flex flex-col sm:flex-row gap-5 lg:gap-6 items-stretch">
                 
                 {/* Guest Image with Center Play Button */}
@@ -306,7 +327,7 @@ export default function Podcast() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col justify-between bg-[#091829]/75 hover:bg-[#0c1e33]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_15px_35px_rgba(2,246,248,0.06)] group"
+              className="flex flex-col justify-between bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_15px_35px_rgba(2,246,248,0.06)] group"
             >
               <div>
                 {/* Top Card Image with Frosted Play Button */}

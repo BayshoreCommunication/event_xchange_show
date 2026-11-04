@@ -28,25 +28,56 @@ const siteUrl = "https://www.dxg.agency";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Digital Xperience Group",
-  description: "Digital Xperience Group Website",
+  title: {
+    default: "The Event XChange Show | Digital Xperience Group",
+    template: "%s | The Event XChange Show",
+  },
+  description:
+    "The Event XChange Show — Where planning meets production. Real conversations, honest stories, and insights from corporate and association event leaders.",
+  keywords: [
+    "The Event XChange Show",
+    "Digital Xperience Group",
+    "DXG",
+    "Event Production",
+    "Event Planning",
+    "Corporate Events",
+    "Podcast",
+  ],
+  authors: [{ name: "Digital Xperience Group", url: siteUrl }],
+  creator: "Digital Xperience Group",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/apple-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   openGraph: {
-    title: "Digital Xperience Group",
-    description: "Digital Xperience Group Website",
+    title: "The Event XChange Show | Digital Xperience Group",
+    description:
+      "Where planning meets production. An independent podcast exploring real stories, tough decisions, and transformational live event experiences.",
     url: siteUrl,
-    siteName: "Digital Xperience Group",
+    siteName: "The Event XChange Show",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "The Event XChange Show - Where Planning Meets Production",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Digital Xperience Group",
-    description: "Digital Xperience Group Website",
+    title: "The Event XChange Show | Digital Xperience Group",
+    description:
+      "Where planning meets production. Real stories and insights for corporate and association event leaders.",
+    images: ["/opengraph-image.jpg"],
   },
 };
 

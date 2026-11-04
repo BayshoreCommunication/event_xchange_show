@@ -1,15 +1,19 @@
-
-import Hero2 from "components/home/hero2";
+import Conversation from "components/home/Conversation";
+import Hero3 from "components/home/Hero3";
+import Industry from "components/home/Industry";
 import Marquee from "components/home/marquee";
-import Podcast from "components/home/podcast";
+import Newslettter from "components/home/Newslettter";
+import Podcast from "components/home/Podcast";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#030A16]">
-      <Hero2 />
-      <Marquee />
+    <div className="min-h-screen bg-[#030A16]">
+      <Hero3 />
+      {/* <Marquee /> */}
       <Podcast />
-    </main>
+      <Conversation />
+      <Industry />
+      <Newslettter />
+    </div>
   );
 }
-
