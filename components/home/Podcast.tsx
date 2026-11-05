@@ -224,12 +224,12 @@ export default function Podcast() {
             </motion.div>
           </div>
 
-          {/* Right Column: Featured Episode Card */}
+          {/* Right Column: Featured Episode Card (reveals in from the right edge) */}
           <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: 140 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 xl:col-span-7"
           >
             <div className="relative group bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 transition-all duration-300 shadow-[0_15px_40px_rgba(0,0,0,0.55)]">
@@ -322,15 +322,31 @@ export default function Podcast() {
 
         {/* ================ BOTTOM SECTION: 3 EPISODE CARDS ================ */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 mt-8 sm:mt-12 lg:mt-16">
-          {EPISODES.map((ep, idx) => (
-            <motion.div
-              key={ep.id}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col justify-between bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_15px_35px_rgba(2,246,248,0.06)] group"
-            >
+          {EPISODES.map((ep, idx) => {
+            // Card reveal directions matching user's arrow diagram:
+            // idx 0 (left card): reveals in from the left (← arrow on left pointing right)
+            // idx 1 (middle card): reveals in from the bottom (↑ arrow from bottom)
+            // idx 2 (right card): reveals in from the right (← arrow from right pointing left)
+            const initialPos =
+              idx === 0
+                ? { opacity: 0, x: -120, y: 0 }
+                : idx === 1
+                ? { opacity: 0, x: 0, y: 120 }
+                : { opacity: 0, x: 120, y: 0 };
+
+            return (
+              <motion.div
+                key={ep.id}
+                initial={initialPos}
+                whileInView={{ opacity: 1, x: 0, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.85,
+                  delay: idx * 0.14,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="flex flex-col justify-between bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_15px_35px_rgba(2,246,248,0.06)] group"
+              >
               <div>
                 {/* Top Card Image with Frosted Play Button */}
                 <div className="relative w-full aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-[#040e1a] mb-5">
@@ -404,7 +420,8 @@ export default function Podcast() {
                 </div>
               </div>
             </motion.div>
-          ))}
+          );
+        })}
         </div>
 
       </div>
