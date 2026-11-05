@@ -4,24 +4,76 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+
+const HERO_TITLE_SEGMENTS: readonly TypingSegment[] = [
+  { text: "The", lineBreak: true },
+  { text: "conversations", lineBreak: true },
+  { text: "behind " },
+  {
+    text: "great",
+    className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#07A6F7] bg-clip-text text-transparent",
+    lineBreak: true,
+  },
+  { text: "events.", className: "text-[#00F0FF]" },
+] as const;
 
 /**
- * 6 wide static equalizer capsule bars matching the exact reference screenshot:
+ * 6 wide animated audio equalizer capsule bars:
  * Positioned behind the top-right of the Event XChange speech bubble badge.
- * Completely static (no animation) with prominent width.
+ * Continuously bounces and pulses like a live music equalizer / audio spectrum.
  */
-interface StaticEqualizerBar {
+interface EqualizerBarConfig {
   readonly id: number;
   readonly heightPercent: number;
+  readonly scaleY: readonly number[];
+  readonly duration: number;
+  readonly delay: number;
 }
 
-const EQUALIZER_BARS: readonly StaticEqualizerBar[] = [
-  { id: 1, heightPercent: 45 },
-  { id: 2, heightPercent: 75 },
-  { id: 3, heightPercent: 90 },
-  { id: 4, heightPercent: 100 },
-  { id: 5, heightPercent: 100 },
-  { id: 6, heightPercent: 100 },
+const EQUALIZER_BARS: readonly EqualizerBarConfig[] = [
+  {
+    id: 1,
+    heightPercent: 45,
+    scaleY: [0.35, 0.95, 0.45, 0.8, 0.35],
+    duration: 1.4,
+    delay: 0,
+  },
+  {
+    id: 2,
+    heightPercent: 75,
+    scaleY: [0.45, 1.0, 0.35, 0.85, 0.45],
+    duration: 1.1,
+    delay: 0.15,
+  },
+  {
+    id: 3,
+    heightPercent: 90,
+    scaleY: [0.5, 0.95, 0.6, 1.0, 0.5],
+    duration: 1.6,
+    delay: 0.05,
+  },
+  {
+    id: 4,
+    heightPercent: 100,
+    scaleY: [0.6, 0.35, 1.0, 0.55, 0.6],
+    duration: 1.25,
+    delay: 0.2,
+  },
+  {
+    id: 5,
+    heightPercent: 100,
+    scaleY: [0.45, 0.9, 0.3, 0.85, 0.45],
+    duration: 1.5,
+    delay: 0.1,
+  },
+  {
+    id: 6,
+    heightPercent: 100,
+    scaleY: [0.55, 1.0, 0.45, 0.75, 0.55],
+    duration: 1.35,
+    delay: 0.25,
+  },
 ] as const;
 
 export default function Hero3() {
@@ -79,24 +131,16 @@ export default function Hero3() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 items-center">
           {/* Left Column: Heading & Action Buttons */}
           <div className="lg:col-span-7 xl:col-span-6 z-20 text-center lg:text-left flex flex-col items-center lg:items-start">
-            {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            {/* Main Headline with Cursorless Typing Animation */}
+            <TypingHeading
+              as="h1"
+              segments={HERO_TITLE_SEGMENTS}
+              triggerOnView={false}
+              delayMs={150}
+              speedMs={32}
+              ariaLabel="The conversations behind great events."
               className="text-[36px] xs:text-[42px] sm:text-[54px] md:text-6xl lg:text-[68px] xl:text-[76px] font-extrabold text-white tracking-[-0.035em] leading-[1.08] sm:leading-[1.05]"
-            >
-              The
-              <br />
-              conversations
-              <br />
-              behind{" "}
-              <span className="bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#07A6F7] bg-clip-text text-transparent">
-                great
-              </span>
-              <br />
-              <span className="text-[#00F0FF]">events.</span>
-            </motion.h1>
+            />
 
             {/* CTA Buttons */}
             <motion.div
@@ -126,9 +170,9 @@ export default function Hero3() {
           {/* Right Column: Event XChange Show Badge & Wide Background Equalizer Bars */}
           <div className="lg:col-span-5 xl:col-span-6 relative w-full flex items-center justify-center lg:justify-end">
             <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 70, scale: 0.94 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 1.0, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-[340px] sm:max-w-[460px] lg:max-w-[540px] xl:max-w-[600px]"
             >
               {/* Soft backlight aura directly behind speech bubble badge */}
@@ -143,27 +187,41 @@ export default function Hero3() {
               />
 
               {/* 
-                Wide Static Equalizer Bars matching the reference image:
+                Wide Animated Equalizer Bars matching live music rhythm:
                 - Positioned behind the top-right of the badge (z-0)
-                - Wide capsule bars with realistic spacing
-                - Bottom aligns around the vertical center of the badge
-                - Tops rise into the top-right background
+                - Continuously dances up and down like a live music equalizer
+                - GPU-accelerated scaleY with origin-bottom
               */}
               <div
                 className="absolute -top-8 sm:-top-12 lg:-top-16 -right-20 sm:-right-28 md:-right-36 lg:-right-48 xl:-right-60 2xl:-right-72 h-[220px] sm:h-[280px] md:h-[340px] lg:h-[390px] xl:h-[430px] flex items-end gap-2 sm:gap-2.5 md:gap-3.5 lg:gap-4 xl:gap-5 z-0 pointer-events-none opacity-60 sm:opacity-65 lg:opacity-75"
                 aria-hidden="true"
               >
                 {EQUALIZER_BARS.map((bar) => (
-                  <div
+                  <motion.div
                     key={bar.id}
                     style={{ height: `${bar.heightPercent}%` }}
+                    animate={{
+                      scaleY: [...bar.scaleY],
+                      opacity: [0.75, 1, 0.7, 0.95, 0.75],
+                    }}
+                    transition={{
+                      duration: bar.duration,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: bar.delay,
+                    }}
                     className="origin-bottom w-3 sm:w-4 md:w-5 lg:w-6 xl:w-7 2xl:w-8 rounded-full bg-gradient-to-t from-transparent via-[#005596]/75 to-[#008bd6] shadow-[0_0_16px_rgba(0,139,214,0.4)]"
                   />
                 ))}
               </div>
 
-              {/* The Event XChange Show Speech-Bubble Logo Badge */}
-              <div className="relative z-10 w-full aspect-[632/408]">
+              {/* The Event XChange Show Speech-Bubble Logo Badge with Reveal-Up */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 w-full aspect-[632/408]"
+              >
                 <Image
                   src="/images/home/hero/hero3-bg.png"
                   alt="The Event XChange Show - Where Planning Meets Production logo"
@@ -172,7 +230,7 @@ export default function Hero3() {
                   sizes="(min-width: 1280px) 50vw, (min-width: 1024px) 45vw, 95vw"
                   className="object-contain object-center lg:object-right select-none drop-shadow-[0_15px_45px_rgba(0,180,240,0.22)]"
                 />
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>

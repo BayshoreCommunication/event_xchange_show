@@ -2,6 +2,16 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+
+const NEWSLETTER_TITLE_SEGMENTS: readonly TypingSegment[] = [
+  { text: "New", lineBreak: true },
+  { text: "Conversation.", lineBreak: true },
+  {
+    text: "Fresh Perspective.",
+    className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent",
+  },
+] as const;
 
 export default function Newsletter() {
     const [email, setEmail] = useState("");
@@ -72,21 +82,14 @@ export default function Newsletter() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
                     {/* ================= LEFT COLUMN: HEADLINE ================= */}
                     <div className="lg:col-span-6 xl:col-span-6 text-center lg:text-left">
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        {/* Heading with Cursorless Typing Animation */}
+                        <TypingHeading
+                            as="h2"
+                            segments={NEWSLETTER_TITLE_SEGMENTS}
+                            speedMs={32}
+                            ariaLabel="New Conversation. Fresh Perspective."
                             className="text-[34px] sm:text-[44px] md:text-[50px] lg:text-[52px] xl:text-[58px] font-extrabold text-white leading-[1.08] tracking-[-0.03em]"
-                        >
-                            New
-                            <br />
-                            Conversation.
-                            <br />
-                            <span className="bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent">
-                                Fresh Perspective.
-                            </span>
-                        </motion.h2>
+                        />
                     </div>
 
                     {/* ================= RIGHT COLUMN: COPY & FORM ================= */}

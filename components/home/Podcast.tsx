@@ -5,6 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Play, Pause } from "lucide-react";
 import { motion } from "framer-motion";
+import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+
+const PODCAST_TITLE_SEGMENTS: readonly TypingSegment[] = [
+  { text: "Hear the " },
+  { text: "latest", className: "text-[#02F6F8]", lineBreak: true },
+  { text: "episodes", className: "text-[#02F6F8]", lineBreak: true },
+  { text: "in the podcast." },
+] as const;
 
 type Episode = {
   id: string;
@@ -169,20 +177,14 @@ export default function Podcast() {
           
           {/* Left Column: Heading, description, and CTAs */}
           <div className="lg:col-span-5 xl:col-span-5 text-center lg:text-left flex flex-col items-center lg:items-start">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            {/* Heading with Cursorless Typing Animation */}
+            <TypingHeading
+              as="h2"
+              segments={PODCAST_TITLE_SEGMENTS}
+              speedMs={32}
+              ariaLabel="Hear the latest episodes in the podcast."
               className="text-[34px] sm:text-4xl md:text-5xl lg:text-[46px] xl:text-[50px] font-extrabold text-white leading-[1.12] tracking-tight"
-            >
-              Hear the{" "}
-              <span className="text-[#02F6F8]">latest</span>
-              <br />
-              <span className="text-[#02F6F8]">episodes</span>
-              <br />
-              in the podcast.
-            </motion.h2>
+            />
 
             <motion.p
               initial={{ opacity: 0, y: 15 }}

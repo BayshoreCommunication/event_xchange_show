@@ -4,6 +4,16 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+
+const CONVERSATION_TITLE_SEGMENTS: readonly TypingSegment[] = [
+  { text: "Two seats.", lineBreak: true },
+  { text: "One honest", lineBreak: true },
+  {
+    text: "conversation.",
+    className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent",
+  },
+] as const;
 
 interface Host {
     readonly id: number;
@@ -96,22 +106,14 @@ export default function Conversation() {
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-center">
                         {/* ================= LEFT COLUMN ================= */}
                         <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-center lg:text-left items-center lg:items-start">
-                            {/* Heading */}
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                            {/* Heading with Cursorless Typing Animation */}
+                            <TypingHeading
+                                as="h2"
+                                segments={CONVERSATION_TITLE_SEGMENTS}
+                                speedMs={32}
+                                ariaLabel="Two seats. One honest conversation."
                                 className="text-[34px] sm:text-[44px] md:text-[50px] lg:text-[52px] xl:text-[58px] font-extrabold text-white leading-[1.08] tracking-[-0.03em]"
-                            >
-                                Two seats.
-                                <br />
-                                One honest
-                                <br />
-                                <span className="bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent">
-                                    conversation.
-                                </span>
-                            </motion.h2>
+                            />
 
                             {/* Description Paragraph */}
                             <motion.p

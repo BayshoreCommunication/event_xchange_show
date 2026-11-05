@@ -4,6 +4,21 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+
+const INDUSTRY_TITLE_SEGMENTS: readonly TypingSegment[] = [
+  { text: "Have", lineBreak: true },
+  { text: "a story", lineBreak: true },
+  {
+    text: "the industry",
+    className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent",
+    lineBreak: true,
+  },
+  {
+    text: "needs to hear?",
+    className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent",
+  },
+] as const;
 
 export default function Industry() {
     return (
@@ -45,24 +60,14 @@ export default function Industry() {
             {/* ---------------- MAIN CONTENT ---------------- */}
             <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
                 <div className="max-w-xl lg:max-w-2xl flex flex-col justify-center text-center lg:text-left items-center lg:items-start mx-auto lg:mx-0">
-                    {/* Heading */}
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    {/* Heading with Cursorless Typing Animation */}
+                    <TypingHeading
+                        as="h2"
+                        segments={INDUSTRY_TITLE_SEGMENTS}
+                        speedMs={32}
+                        ariaLabel="Have a story the industry needs to hear?"
                         className="text-[34px] sm:text-[44px] md:text-[52px] lg:text-[60px] xl:text-[68px] font-extrabold text-white leading-[1.06] tracking-[-0.03em]"
-                    >
-                        Have
-                        <br />
-                        a story
-                        <br />
-                        <span className="bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent">
-                            the industry
-                            <br />
-                            needs to hear?
-                        </span>
-                    </motion.h2>
+                    />
 
                     {/* Description Paragraph */}
                     <motion.p
