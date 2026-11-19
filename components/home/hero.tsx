@@ -20,7 +20,8 @@ export default function Hero() {
                     {/* Left Column: Heading */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: false, amount: 0.4 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
                         className="lg:col-span-7 xl:col-span-7"
                     >
@@ -37,7 +38,8 @@ export default function Hero() {
                     {/* Right Column: Description + Buttons */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: false, amount: 0.4 }}
                         transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                         className="lg:col-span-5 xl:col-span-5 flex flex-col justify-start lg:pt-2"
                     >
@@ -69,7 +71,8 @@ export default function Hero() {
             {/* ---------------- BOTTOM MICROPHONE HERO IMAGE ---------------- */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="relative w-full overflow-hidden border-b border-white/10"
             >

@@ -189,7 +189,7 @@ export default function Podcast() {
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
               className="mt-5 sm:mt-6 text-sm sm:text-[15px] text-[#8fa7be] leading-relaxed max-w-lg mx-auto lg:mx-0"
             >
@@ -204,7 +204,7 @@ export default function Podcast() {
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
               className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
             >
@@ -228,7 +228,7 @@ export default function Podcast() {
           <motion.div
             initial={{ opacity: 0, x: 140 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: false, margin: "-60px" }}
             transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 xl:col-span-7"
           >
@@ -339,7 +339,7 @@ export default function Podcast() {
                 key={ep.id}
                 initial={initialPos}
                 whileInView={{ opacity: 1, x: 0, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={{ once: false, margin: "-60px" }}
                 transition={{
                   duration: 0.85,
                   delay: idx * 0.14,

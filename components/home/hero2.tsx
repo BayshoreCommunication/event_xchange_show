@@ -49,7 +49,8 @@ export default function Hero2() {
           <div className="order-1 lg:order-2 lg:col-span-5 xl:col-span-6 relative w-full h-[240px] sm:h-[320px] md:h-[380px] lg:h-[500px] xl:h-[560px]">
             <motion.div
               initial={{ opacity: 0, y: -15, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: false, amount: 0.4 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative w-full h-full flex justify-center lg:justify-end items-center"
             >
@@ -69,7 +70,8 @@ export default function Hero2() {
             {/* Main Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.4 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="text-[40px] sm:text-5xl md:text-6xl lg:text-[70px] xl:text-[78px] font-extrabold text-white tracking-[-0.03em] leading-[1.08] sm:leading-[1.05]"
             >
@@ -88,7 +90,8 @@ export default function Hero2() {
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.4 }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
               className="mt-6 sm:mt-8 md:mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
             >

@@ -97,7 +97,7 @@ export default function Newsletter() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: false }}
                             transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                             className="w-full max-w-[500px] flex flex-col items-center lg:items-start"
                         >

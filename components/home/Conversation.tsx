@@ -119,7 +119,7 @@ export default function Conversation() {
                             <motion.p
                                 initial={{ opacity: 0, y: 15 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
+                                viewport={{ once: false }}
                                 transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                                 className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[460px] mx-auto lg:mx-0"
                             >
@@ -134,7 +134,7 @@ export default function Conversation() {
                             <motion.div
                                 initial={{ opacity: 0, y: 15 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
+                                viewport={{ once: false }}
                                 transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
                                 className="mt-7 sm:mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
                             >
@@ -166,7 +166,7 @@ export default function Conversation() {
                                         key={host.id}
                                         initial={{ opacity: 0, y: 20 }}
                                         whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
+                                        viewport={{ once: false }}
                                         transition={{ duration: 0.6, delay: host.id * 0.15, ease: [0.22, 1, 0.36, 1] }}
                                         role="button"
                                         tabIndex={0}

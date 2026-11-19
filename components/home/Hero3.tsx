@@ -19,11 +19,12 @@ const HERO_TITLE_SEGMENTS: readonly TypingSegment[] = [
 ] as const;
 
 /**
- * 8 wide animated audio equalizer capsule bars:
- * Positioned behind the top-right of the Event XChange speech bubble badge.
+ * 13 animated audio equalizer capsule bars in ONE flex row behind the
+ * Event XChange speech bubble badge — the original 8 bars on the right
+ * (unchanged) plus 5 more appended on their left in the same row.
  * All bars share the same duration with progressively staggered delays,
- * so a single smooth rhythm wave travels across the spectrum like
- * a calm visualizer behind a podcast.
+ * so one smooth rhythm wave travels across the whole row like a calm
+ * podcast visualizer.
  */
 interface EqualizerBarConfig {
   readonly id: number;
@@ -33,20 +34,52 @@ interface EqualizerBarConfig {
   readonly delay: number;
 }
 
-const EQ_WAVE_DURATION = 2.6;
+const EQ_WAVE_DURATION = 4.2;
+const EQ_WAVE_STAGGER = 0.22;
 
-const EQUALIZER_BARS: readonly EqualizerBarConfig[] = [
-  { id: 1, heightPercent: 34, scaleY: [0.6, 0.95, 0.6], duration: EQ_WAVE_DURATION, delay: 0 },
-  { id: 2, heightPercent: 56, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.14 },
-  { id: 3, heightPercent: 68, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.28 },
-  { id: 4, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.42 },
-  { id: 5, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.56 },
-  { id: 6, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.7 },
-  { id: 7, heightPercent: 60, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.84 },
-  { id: 8, heightPercent: 45, scaleY: [0.6, 0.95, 0.6], duration: EQ_WAVE_DURATION, delay: 0.98 },
-] as const;
+/** Identical motion for every bar — only the delay differs, so a single
+ * pulse travels across the row. repeatType "mirror" plays the wave
+ * forward, then reverses it, so bars grow big on the way out and
+ * shrink small again on the way back. */
+const EQ_SCALEY: readonly number[] = [0.4, 1.0, 0.4];
+
+const EQ_BAR_COUNT = 13;
+const EQ_BAR_HEIGHT = 75;
+
+const EQUALIZER_BARS: readonly EqualizerBarConfig[] = Array.from(
+  { length: EQ_BAR_COUNT },
+  (_, i) => ({
+    id: i + 1,
+    heightPercent: EQ_BAR_HEIGHT,
+    scaleY: EQ_SCALEY,
+    duration: EQ_WAVE_DURATION,
+    delay: i * EQ_WAVE_STAGGER,
+  }),
+);
 
 export default function Hero3() {
+  const renderEqualizerBars = (bars: readonly EqualizerBarConfig[]) => (
+    <>
+      {bars.map((bar) => (
+        <motion.div
+          key={bar.id}
+          style={{ height: `${bar.heightPercent}%` }}
+          animate={{
+            scaleY: [...bar.scaleY],
+          }}
+          transition={{
+            duration: bar.duration,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+            delay: bar.delay,
+          }}
+          className="origin-bottom w-3 sm:w-4 md:w-5 lg:w-6 xl:w-7 2xl:w-8 rounded-full bg-gradient-to-t from-[#030a16]/0 via-[#0b3f66]/45 to-[#1178b4]/70 blur-[0.5px]"
+        />
+      ))}
+    </>
+  );
+
   return (
     <section
       aria-label="Hero: The Event XChange Show"
@@ -115,7 +148,8 @@ export default function Hero3() {
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.4 }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
               className="mt-7 sm:mt-9 lg:mt-11 flex flex-wrap items-center justify-center lg:justify-start gap-3.5 sm:gap-4"
             >
@@ -141,7 +175,8 @@ export default function Hero3() {
           <div className="lg:col-span-5 xl:col-span-6 relative w-full flex items-center justify-center lg:justify-end">
             <motion.div
               initial={{ opacity: 0, y: 70, scale: 0.94 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: false, amount: 0.4 }}
               transition={{ duration: 1.0, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-[340px] sm:max-w-[460px] lg:max-w-[540px] xl:max-w-[600px]"
             >
@@ -157,38 +192,32 @@ export default function Hero3() {
               />
 
               {/* 
-                Wide Animated Equalizer Bars matching live music rhythm:
-                - Positioned behind the top-right of the badge (z-0)
-                - Continuously dances up and down like a live music equalizer
-                - GPU-accelerated scaleY with origin-bottom
+                13 animated equalizer bars in ONE row behind the badge (z-0):
+                - Original 8 bars on the right, 5 appended on their left,
+                  all inside a single flex container
+                - One slow rhythm wave travels across the whole row
+                - Low-contrast gradient melts into the dark background
               */}
               <div
-                className="absolute -top-8 sm:-top-12 lg:-top-16 -right-20 sm:-right-28 md:-right-36 lg:-right-48 xl:-right-60 2xl:-right-72 h-[220px] sm:h-[280px] md:h-[340px] lg:h-[390px] xl:h-[430px] flex items-end gap-2 sm:gap-2.5 md:gap-3.5 lg:gap-4 xl:gap-5 z-0 pointer-events-none opacity-60 sm:opacity-65 lg:opacity-75"
+                className="absolute -top-8 sm:-top-12 lg:-top-16 -right-20 sm:-right-28 md:-right-36 lg:-right-48 xl:-right-60 2xl:-right-72 h-[220px] sm:h-[280px] md:h-[340px] lg:h-[390px] xl:h-[430px] z-0 pointer-events-none"
                 aria-hidden="true"
               >
-                {EQUALIZER_BARS.map((bar) => (
-                  <motion.div
-                    key={bar.id}
-                    style={{ height: `${bar.heightPercent}%` }}
-                    animate={{
-                      scaleY: [...bar.scaleY],
-                    }}
-                    transition={{
-                      duration: bar.duration,
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      ease: "easeInOut",
-                      delay: bar.delay,
-                    }}
-                    className="origin-bottom w-3 sm:w-4 md:w-5 lg:w-6 xl:w-7 2xl:w-8 rounded-full bg-gradient-to-t from-transparent via-[#005596]/75 to-[#008bd6] shadow-[0_0_16px_rgba(0,139,214,0.4)]"
-                  />
-                ))}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ duration: 1.0, ease: "easeOut" }}
+                  className="w-full h-full flex items-end gap-2 sm:gap-2.5 md:gap-3.5 lg:gap-4 xl:gap-5 opacity-45 sm:opacity-50 lg:opacity-60"
+                >
+                  {renderEqualizerBars(EQUALIZER_BARS)}
+                </motion.div>
               </div>
 
               {/* The Event XChange Show Speech-Bubble Logo Badge with Reveal-Up */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.4 }}
                 transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 w-full aspect-[632/408]"
               >
