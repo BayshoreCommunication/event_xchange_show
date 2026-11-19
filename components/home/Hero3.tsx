@@ -19,9 +19,11 @@ const HERO_TITLE_SEGMENTS: readonly TypingSegment[] = [
 ] as const;
 
 /**
- * 6 wide animated audio equalizer capsule bars:
+ * 8 wide animated audio equalizer capsule bars:
  * Positioned behind the top-right of the Event XChange speech bubble badge.
- * Continuously bounces and pulses like a live music equalizer / audio spectrum.
+ * All bars share the same duration with progressively staggered delays,
+ * so a single smooth rhythm wave travels across the spectrum like
+ * a calm visualizer behind a podcast.
  */
 interface EqualizerBarConfig {
   readonly id: number;
@@ -31,49 +33,17 @@ interface EqualizerBarConfig {
   readonly delay: number;
 }
 
+const EQ_WAVE_DURATION = 2.6;
+
 const EQUALIZER_BARS: readonly EqualizerBarConfig[] = [
-  {
-    id: 1,
-    heightPercent: 45,
-    scaleY: [0.35, 0.95, 0.45, 0.8, 0.35],
-    duration: 1.4,
-    delay: 0,
-  },
-  {
-    id: 2,
-    heightPercent: 75,
-    scaleY: [0.45, 1.0, 0.35, 0.85, 0.45],
-    duration: 1.1,
-    delay: 0.15,
-  },
-  {
-    id: 3,
-    heightPercent: 90,
-    scaleY: [0.5, 0.95, 0.6, 1.0, 0.5],
-    duration: 1.6,
-    delay: 0.05,
-  },
-  {
-    id: 4,
-    heightPercent: 100,
-    scaleY: [0.6, 0.35, 1.0, 0.55, 0.6],
-    duration: 1.25,
-    delay: 0.2,
-  },
-  {
-    id: 5,
-    heightPercent: 100,
-    scaleY: [0.45, 0.9, 0.3, 0.85, 0.45],
-    duration: 1.5,
-    delay: 0.1,
-  },
-  {
-    id: 6,
-    heightPercent: 100,
-    scaleY: [0.55, 1.0, 0.45, 0.75, 0.55],
-    duration: 1.35,
-    delay: 0.25,
-  },
+  { id: 1, heightPercent: 34, scaleY: [0.6, 0.95, 0.6], duration: EQ_WAVE_DURATION, delay: 0 },
+  { id: 2, heightPercent: 56, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.14 },
+  { id: 3, heightPercent: 68, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.28 },
+  { id: 4, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.42 },
+  { id: 5, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.56 },
+  { id: 6, heightPercent: 75, scaleY: [0.5, 1.0, 0.5], duration: EQ_WAVE_DURATION, delay: 0.7 },
+  { id: 7, heightPercent: 60, scaleY: [0.55, 1.0, 0.55], duration: EQ_WAVE_DURATION, delay: 0.84 },
+  { id: 8, heightPercent: 45, scaleY: [0.6, 0.95, 0.6], duration: EQ_WAVE_DURATION, delay: 0.98 },
 ] as const;
 
 export default function Hero3() {
@@ -202,11 +172,11 @@ export default function Hero3() {
                     style={{ height: `${bar.heightPercent}%` }}
                     animate={{
                       scaleY: [...bar.scaleY],
-                      opacity: [0.75, 1, 0.7, 0.95, 0.75],
                     }}
                     transition={{
                       duration: bar.duration,
                       repeat: Infinity,
+                      repeatType: "loop",
                       ease: "easeInOut",
                       delay: bar.delay,
                     }}
