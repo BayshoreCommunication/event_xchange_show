@@ -36,9 +36,9 @@ export default function Footer() {
 
     return (
         <footer className="w-full bg-[#030A16] text-white border-t border-white/5">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 lg:pt-12 pb-6 sm:pb-8">
                 {/* ---------------- TOP CONTENT (LOGO + NAV COLUMNS) ---------------- */}
-                <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-16">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-12">
                     {/* Brand / Logo */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="inline-block group focus:outline-none">
@@ -79,7 +79,7 @@ export default function Footer() {
                 </div>
 
                 {/* ---------------- BOTTOM COPYRIGHT & POWERED BY ---------------- */}
-                <div className="pt-16 sm:pt-20 md:pt-28 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-400">
+                <div className="pt-8 sm:pt-10 md:pt-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-400">
                     <p className="text-center sm:text-left">
                         {currentYear} The Event Exchange Show- Where Planning Meets Production
                     </p>

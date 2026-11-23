@@ -32,7 +32,7 @@ export default function Newsletter() {
     return (
         <section
             aria-label="Newsletter: New Conversation. Fresh Perspective."
-            className="relative w-full bg-[#051929] text-white py-8 sm:py-16 lg:py-24 overflow-hidden"
+            className="relative w-full bg-[#051929] text-white py-6 sm:py-10 lg:py-12 overflow-hidden"
         >
             {/* ---------------- ATMOSPHERIC BACKGROUND GRADIENTS ---------------- */}
             {/* Base cross-gradient matching the reference screenshot */}

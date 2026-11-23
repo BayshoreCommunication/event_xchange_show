@@ -24,7 +24,7 @@ export default function Industry() {
     return (
         <section
             aria-label="Have a story the industry needs to hear?"
-            className="relative w-full min-h-[460px] sm:min-h-[560px] lg:min-h-[660px] xl:min-h-[720px] bg-[#030A16] text-white py-8 sm:py-16 lg:py-24 overflow-hidden flex items-center"
+            className="relative w-full min-h-[340px] sm:min-h-[400px] lg:min-h-[460px] xl:min-h-[500px] bg-[#030A16] text-white py-6 sm:py-10 lg:py-12 overflow-hidden flex items-center"
         >
             {/* ---------------- BACKGROUND IMAGE ---------------- */}
             <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none" aria-hidden="true">

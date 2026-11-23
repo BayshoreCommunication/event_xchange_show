@@ -51,7 +51,7 @@ export default function Conversation() {
     return (
         <section
             aria-label="Conversation: Two seats. One honest conversation."
-            className="relative w-full bg-[#030A16] text-white py-8 sm:py-16 lg:py-24 overflow-hidden"
+            className="relative w-full bg-[#030A16] text-white py-6 sm:py-10 lg:py-12 overflow-hidden"
         >
             {/* ---------------- ATMOSPHERIC BACKGROUND GLOWS ---------------- */}
             {/* 1. Atmospheric cyan-teal aura in bottom-left (matching reference screenshot) */}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Pause } from "lucide-react";
@@ -41,7 +41,7 @@ const FEATURED_EPISODE: Episode = {
   role: "[Role/Organization]",
 };
 
-const EPISODES: Episode[] = [
+const BASE_EPISODES: Episode[] = [
   {
     id: "ep-01",
     episode: "EP 01",
@@ -83,12 +83,26 @@ const EPISODES: Episode[] = [
   },
 ];
 
+// The 3 base episodes repeated 3 times = 9 slider items (each with a unique id).
+// Replace with real episodes when they are available.
+const EPISODES: Episode[] = Array.from({ length: 3 }, (_, round) =>
+  BASE_EPISODES.map((ep) => ({ ...ep, id: `${ep.id}-${round + 1}` }))
+).flat();
+
+const AUTOPLAY_MS = 3500;
+// Slider track is rendered twice so it can loop forward endlessly, one card at a time.
+const SLIDE_COPIES = 2;
+
 // Audio SoundWave graphic component matching screenshot
-function SoundWave({ isPlaying }: { isPlaying: boolean }) {
-  const barHeights = [5, 9, 15, 20, 11, 16, 22, 14, 18, 12, 6, 16, 20, 11, 16, 9, 5];
+function SoundWave({ isPlaying, compact = false }: { isPlaying: boolean; compact?: boolean }) {
+  const allBars = [5, 9, 15, 20, 11, 16, 22, 14, 18, 12, 6, 16, 20, 11, 16, 9, 5];
+  const barHeights = compact ? allBars.slice(3, 12) : allBars;
 
   return (
-    <div className="flex items-center gap-[2.5px] h-6 px-1 select-none" aria-hidden="true">
+    <div
+      className={`flex items-center gap-[2.5px] px-1 select-none ${compact ? "h-5" : "h-6"}`}
+      aria-hidden="true"
+    >
       {barHeights.map((h, i) => (
         <span
           key={i}
@@ -96,12 +110,175 @@ function SoundWave({ isPlaying }: { isPlaying: boolean }) {
             isPlaying ? "bg-[#02F6F8] animate-pulse" : "bg-[#02F6F8]/60"
           }`}
           style={{
-            height: isPlaying ? `${Math.max(4, (h * ((i % 3) + 1)) % 22)}px` : `${h}px`,
+            height: isPlaying
+              ? `${Math.max(4, (h * ((i % 3) + 1)) % (compact ? 18 : 22))}px`
+              : `${compact ? Math.round(h * 0.8) : h}px`,
             transitionDelay: `${i * 25}ms`,
           }}
         />
       ))}
     </div>
+  );
+}
+
+type CardProps = {
+  ep: Episode;
+  isPlaying: boolean;
+  onToggle: () => void;
+  isClone?: boolean;
+};
+
+// Big, fixed featured card (left of the slider)
+function FeaturedCard({ ep, isPlaying, onToggle }: CardProps) {
+  return (
+    <article className="group relative flex flex-col h-full bg-[#071f31]/90 hover:bg-[#0a253c]/95 border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[20px] sm:rounded-[22px] p-3.5 sm:p-4 transition-all duration-300 shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
+      <div className="relative w-full aspect-[4/3] md:aspect-[5/4] rounded-[14px] sm:rounded-2xl overflow-hidden bg-[#040e1a]">
+        <Image
+          src={ep.image}
+          alt={ep.title}
+          fill
+          priority
+          sizes="(min-width: 1280px) 310px, (min-width: 768px) 280px, 100vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          style={{ objectPosition: ep.objectPosition }}
+        />
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={isPlaying ? "Pause episode" : "Play episode"}
+          className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-xl hover:scale-110 hover:bg-[#02F6F8]/25 hover:border-[#02F6F8]/70 active:scale-95 transition-all duration-300 cursor-pointer"
+        >
+          {isPlaying ? (
+            <Pause className="w-5 h-5 fill-white text-white" />
+          ) : (
+            <Play className="w-5 h-5 fill-white text-white ml-0.5" />
+          )}
+        </button>
+      </div>
+
+      <div className="flex flex-col flex-1 px-1 pt-4">
+        <div className="flex items-center gap-3 text-xs">
+          <span className="text-[#02F6F8] font-bold tracking-wider">{ep.episode}</span>
+          <span className="text-[#8fa7be]">{ep.type}</span>
+          <span className="text-[#8fa7be]">{ep.duration}</span>
+        </div>
+
+        <h3 className="mt-2.5 text-lg sm:text-xl xl:text-[22px] font-bold text-white group-hover:text-[#02F6F8] transition-colors leading-snug">
+          {ep.title}
+        </h3>
+
+        <p className="mt-2 text-xs sm:text-[13px] text-[#8fa7be] leading-relaxed">
+          {ep.description}
+        </p>
+
+        <div className="mt-auto pt-4">
+          <div className="pt-3.5 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={onToggle}
+                className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-white hover:text-[#02F6F8] transition-colors cursor-pointer"
+              >
+                <span className="w-8 h-8 rounded-full bg-[#02F6F8] flex items-center justify-center text-[#020813] shadow-[0_0_15px_rgba(2,246,248,0.5)] hover:scale-105 active:scale-95 transition-transform">
+                  {isPlaying ? (
+                    <Pause className="w-3.5 h-3.5 fill-[#020813] text-[#020813]" />
+                  ) : (
+                    <Play className="w-3.5 h-3.5 fill-[#020813] text-[#020813] ml-0.5" />
+                  )}
+                </span>
+                <span>{isPlaying ? "Pause Episode" : "Play Episode"}</span>
+              </button>
+              <SoundWave isPlaying={isPlaying} />
+            </div>
+
+            <div className="mt-3 flex items-center justify-between text-[11px] sm:text-xs text-[#6e859b]">
+              <span>{ep.guest}</span>
+              <span>{ep.role}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+// Smaller card used inside the auto-advancing slider
+function SmallCard({ ep, isPlaying, onToggle, isClone = false }: CardProps) {
+  const tab = isClone ? -1 : undefined;
+
+  return (
+    <article
+      aria-hidden={isClone || undefined}
+      className="group relative flex flex-col h-full bg-[#071f31]/80 hover:bg-[#0a253c]/90 border border-white/[0.07] hover:border-[#02F6F8]/30 rounded-[18px] p-3 transition-all duration-300"
+    >
+      <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#040e1a]">
+        <Image
+          src={ep.image}
+          alt={isClone ? "" : ep.title}
+          fill
+          sizes="(min-width: 768px) 220px, 75vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          style={{ objectPosition: ep.objectPosition }}
+        />
+        <button
+          type="button"
+          tabIndex={tab}
+          onClick={onToggle}
+          aria-label={isPlaying ? "Pause episode" : "Play episode"}
+          className="absolute inset-0 m-auto w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-lg hover:scale-110 hover:bg-[#02F6F8]/25 hover:border-[#02F6F8]/70 active:scale-95 transition-all duration-300 cursor-pointer"
+        >
+          {isPlaying ? (
+            <Pause className="w-3.5 h-3.5 fill-white text-white" />
+          ) : (
+            <Play className="w-3.5 h-3.5 fill-white text-white ml-0.5" />
+          )}
+        </button>
+      </div>
+
+      <div className="flex flex-col flex-1 px-0.5 pt-3">
+        <div className="flex items-center gap-2.5 text-[10px] sm:text-[11px]">
+          <span className="text-[#02F6F8] font-bold tracking-wider">{ep.episode}</span>
+          <span className="text-[#8fa7be]">{ep.type}</span>
+          <span className="text-[#8fa7be]">{ep.duration}</span>
+        </div>
+
+        <h3 className="mt-1.5 text-sm sm:text-[15px] font-bold text-white group-hover:text-[#02F6F8] transition-colors leading-snug line-clamp-2">
+          {ep.title}
+        </h3>
+
+        <p className="mt-1.5 text-[11px] sm:text-xs text-[#8fa7be] leading-relaxed line-clamp-2">
+          {ep.description}
+        </p>
+
+        <div className="mt-auto pt-3">
+          <div className="pt-3 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between gap-2">
+              <button
+                type="button"
+                tabIndex={tab}
+                onClick={onToggle}
+                className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold text-white hover:text-[#02F6F8] transition-colors cursor-pointer whitespace-nowrap"
+              >
+                <span className="w-6 h-6 rounded-full bg-[#02F6F8] flex items-center justify-center text-[#020813] shadow-[0_0_12px_rgba(2,246,248,0.45)]">
+                  {isPlaying ? (
+                    <Pause className="w-3 h-3 fill-[#020813] text-[#020813]" />
+                  ) : (
+                    <Play className="w-3 h-3 fill-[#020813] text-[#020813] ml-0.5" />
+                  )}
+                </span>
+                <span>{isPlaying ? "Pause" : "Play Episode"}</span>
+              </button>
+              <SoundWave isPlaying={isPlaying} compact />
+            </div>
+
+            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] sm:text-[11px] text-[#6e859b]">
+              <span className="truncate">{ep.guest}</span>
+              <span className="truncate">{ep.role}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -112,8 +289,86 @@ export default function Podcast() {
     setPlayingId((prev) => (prev === id ? null : id));
   };
 
+  // ---------------- SLIDER STATE ----------------
+  const total = EPISODES.length;
+  const slides = Array.from({ length: SLIDE_COPIES }, () => EPISODES).flat();
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const [animate, setAnimate] = useState(true);
+  const [step, setStep] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  // Measure one card + gap so the track moves exactly one card per step
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const measure = () => {
+      const first = track.firstElementChild as HTMLElement | null;
+      if (!first) return;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      setStep(first.offsetWidth + gap);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, []);
+
+  const next = useCallback(() => {
+    setAnimate(true);
+    setIndex((i) => (i >= total ? i : i + 1));
+  }, [total]);
+
+  const prev = useCallback(() => {
+    if (index > 0) {
+      setAnimate(true);
+      setIndex(index - 1);
+      return;
+    }
+    // At the very start: jump (no animation) to the same card in the next copy, then slide back one
+    setAnimate(false);
+    setIndex(total);
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        setAnimate(true);
+        setIndex(total - 1);
+      })
+    );
+  }, [index, total]);
+
+  const goTo = (target: number) => {
+    setAnimate(true);
+    setIndex(target);
+  };
+
+  // Once we have slid into the second copy, silently snap back to the first copy
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget || e.propertyName !== "transform") return;
+    if (index >= total) {
+      setAnimate(false);
+      setIndex(index - total);
+    }
+  };
+
+  // Autoplay: advance one card at a time; pauses on hover/touch/focus, hidden tab and reduced motion
+  useEffect(() => {
+    if (paused || total < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => {
+      if (!document.hidden) next();
+    }, AUTOPLAY_MS);
+    return () => window.clearInterval(id);
+  }, [paused, next, total]);
+
+  // Pagination: 3 dots, each dot covers a group of 3 cards
+  const DOT_COUNT = 3;
+  const perDot = Math.ceil(total / DOT_COUNT);
+  const activeDot = Math.min(DOT_COUNT - 1, Math.floor((index % total) / perDot));
+
   return (
-    <section className="relative w-full bg-[#02121c] text-white py-8 sm:py-16 lg:py-24 overflow-hidden">
+    <section className="relative w-full bg-[#02121c] text-white py-6 sm:py-10 lg:py-12 overflow-hidden">
       {/* ---------------- ATMOSPHERIC GRADIENTS (EXACT TO REFERENCE SCREENSHOT) ---------------- */}
       {/* 1. Base dark teal wash across entire section */}
       <div
@@ -173,7 +428,7 @@ export default function Podcast() {
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 z-10">
         
         {/* ================ TOP SECTION: HEADLINE + FEATURED EPISODE ================ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-10 items-center">
           
           {/* Left Column: Heading, description, and CTAs */}
           <div className="lg:col-span-5 xl:col-span-5 text-center lg:text-left flex flex-col items-center lg:items-start">
@@ -224,206 +479,99 @@ export default function Podcast() {
             </motion.div>
           </div>
 
-          {/* Right Column: Featured Episode Card (reveals in from the right edge) */}
+          {/* Right Column: big fixed featured card + auto-advancing slider of smaller cards.
+              On md+ the panel bleeds to the right edge of the screen. */}
           <motion.div
             initial={{ opacity: 0, x: 140 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, margin: "-60px" }}
             transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 xl:col-span-7"
+            className="lg:col-span-7 min-w-0 md:-mr-8 lg:mr-[calc(-3rem_-_max(0px,(100vw_-_80rem)/2))]"
           >
-            <div className="relative group bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 transition-all duration-300 shadow-[0_15px_40px_rgba(0,0,0,0.55)]">
-              <div className="flex flex-col sm:flex-row gap-5 lg:gap-6 items-stretch">
-                
-                {/* Guest Image with Center Play Button */}
-                <div className="relative w-full sm:w-[220px] md:w-[250px] lg:w-[230px] xl:w-[255px] aspect-[4/3] sm:aspect-square shrink-0 rounded-2xl overflow-hidden bg-[#040e1a]">
-                  <Image
-                    src={FEATURED_EPISODE.image}
-                    alt={FEATURED_EPISODE.title}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 260px, (min-width: 640px) 240px, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    style={{ objectPosition: FEATURED_EPISODE.objectPosition }}
-                  />
-                  {/* Frosted Glass Play Button on Image */}
-                  <button
-                    type="button"
-                    onClick={() => togglePlay(FEATURED_EPISODE.id)}
-                    aria-label={playingId === FEATURED_EPISODE.id ? "Pause episode" : "Play episode"}
-                    className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-xl hover:scale-110 hover:bg-[#02F6F8]/25 hover:border-[#02F6F8]/70 active:scale-95 transition-all duration-300 cursor-pointer"
+            <div
+              className="relative flex flex-col md:flex-row md:items-start gap-4 lg:gap-5"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onFocus={() => setPaused(true)}
+              onBlur={() => setPaused(false)}
+            >
+              {/* Featured (fixed) */}
+              <div className="w-full md:w-[280px] lg:w-[260px] xl:w-[300px] shrink-0">
+                <FeaturedCard
+                  ep={FEATURED_EPISODE}
+                  isPlaying={playingId === FEATURED_EPISODE.id}
+                  onToggle={() => togglePlay(FEATURED_EPISODE.id)}
+                />
+              </div>
+
+              {/* Slider */}
+              <div
+                className="flex-1 min-w-0"
+                role="region"
+                aria-roledescription="carousel"
+                aria-label="More episodes"
+              >
+                <div
+                  className="overflow-hidden -my-2 py-2"
+                  onTouchStart={(e) => {
+                    touchStartX.current = e.touches[0].clientX;
+                    setPaused(true);
+                  }}
+                  onTouchEnd={(e) => {
+                    const start = touchStartX.current;
+                    touchStartX.current = null;
+                    setPaused(false);
+                    if (start === null) return;
+                    const dx = e.changedTouches[0].clientX - start;
+                    if (dx < -40) next();
+                    else if (dx > 40) prev();
+                  }}
+                >
+                  <div
+                    ref={trackRef}
+                    onTransitionEnd={handleTransitionEnd}
+                    className={`flex gap-3 sm:gap-4 ${
+                      animate ? "transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" : ""
+                    }`}
+                    style={{ transform: `translate3d(-${index * step}px,0,0)` }}
                   >
-                    {playingId === FEATURED_EPISODE.id ? (
-                      <Pause className="w-5 h-5 fill-white text-white" />
-                    ) : (
-                      <Play className="w-5 h-5 fill-white text-white ml-0.5" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Episode Details */}
-                <div className="flex flex-col justify-between flex-1 py-1">
-                  <div>
-                    {/* Meta Tags */}
-                    <div className="flex items-center gap-3 text-xs">
-                      <span className="text-[#02F6F8] font-bold tracking-wider">
-                        {FEATURED_EPISODE.episode}
-                      </span>
-                      <span className="text-[#8fa7be]">{FEATURED_EPISODE.type}</span>
-                      <span className="text-[#8fa7be]">{FEATURED_EPISODE.duration}</span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="mt-3 text-lg sm:text-xl md:text-[22px] font-bold text-white group-hover:text-[#02F6F8] transition-colors leading-snug">
-                      {FEATURED_EPISODE.title}
-                    </h3>
-
-                    {/* Subtitle / Description */}
-                    <p className="mt-2 text-xs sm:text-sm text-[#8fa7be] leading-relaxed">
-                      {FEATURED_EPISODE.description}
-                    </p>
-                  </div>
-
-                  {/* Audio Controls and Guest Row */}
-                  <div className="mt-6 pt-4 border-t border-white/[0.08]">
-                    {/* Play row with Audio Soundwave */}
-                    <div className="flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={() => togglePlay(FEATURED_EPISODE.id)}
-                        className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-white hover:text-[#02F6F8] transition-colors cursor-pointer"
+                    {slides.map((ep, i) => (
+                      <div
+                        key={`${ep.id}-${i}`}
+                        className="w-[64%] sm:w-[42%] md:w-[200px] lg:w-[190px] xl:w-[215px] shrink-0"
                       >
-                        <span className="w-8 h-8 rounded-full bg-[#02F6F8] flex items-center justify-center text-[#020813] shadow-[0_0_15px_rgba(2,246,248,0.5)] hover:scale-105 active:scale-95 transition-transform">
-                          {playingId === FEATURED_EPISODE.id ? (
-                            <Pause className="w-3.5 h-3.5 fill-[#020813] text-[#020813]" />
-                          ) : (
-                            <Play className="w-3.5 h-3.5 fill-[#020813] text-[#020813] ml-0.5" />
-                          )}
-                        </span>
-                        <span>{playingId === FEATURED_EPISODE.id ? "Pause Episode" : "Play Episode"}</span>
-                      </button>
-
-                      {/* Soundwave */}
-                      <SoundWave isPlaying={playingId === FEATURED_EPISODE.id} />
-                    </div>
-
-                    {/* Guest name & role */}
-                    <div className="mt-4 flex items-center justify-between text-[11px] sm:text-xs text-[#6e859b]">
-                      <span>{FEATURED_EPISODE.guest}</span>
-                      <span>{FEATURED_EPISODE.role}</span>
-                    </div>
+                        <SmallCard
+                          ep={ep}
+                          isPlaying={playingId === ep.id}
+                          onToggle={() => togglePlay(ep.id)}
+                          isClone={i >= total}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
 
+                {/* Pagination (centered under the slider cards) */}
+                <div className="mt-4 flex items-center justify-center">
+                  <div className="flex items-center gap-1.5">
+                    {Array.from({ length: DOT_COUNT }, (_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => goTo(i * perDot)}
+                        aria-label={`Go to slide group ${i + 1}`}
+                        aria-current={activeDot === i}
+                        className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                          activeDot === i ? "w-6 bg-[#02F6F8]" : "w-1.5 bg-white/25 hover:bg-white/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
         </div>
-
-        {/* ================ BOTTOM SECTION: 3 EPISODE CARDS ================ */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 mt-8 sm:mt-12 lg:mt-16">
-          {EPISODES.map((ep, idx) => {
-            // Card reveal directions matching user's arrow diagram:
-            // idx 0 (left card): reveals in from the left (← arrow on left pointing right)
-            // idx 1 (middle card): reveals in from the bottom (↑ arrow from bottom)
-            // idx 2 (right card): reveals in from the right (← arrow from right pointing left)
-            const initialPos =
-              idx === 0
-                ? { opacity: 0, x: -120, y: 0 }
-                : idx === 1
-                ? { opacity: 0, x: 0, y: 120 }
-                : { opacity: 0, x: 120, y: 0 };
-
-            return (
-              <motion.div
-                key={ep.id}
-                initial={initialPos}
-                whileInView={{ opacity: 1, x: 0, y: 0 }}
-                viewport={{ once: false, margin: "-60px" }}
-                transition={{
-                  duration: 0.85,
-                  delay: idx * 0.14,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="flex flex-col justify-between bg-[#061c2d]/75 hover:bg-[#0a253c]/85 backdrop-blur-xl border border-white/[0.08] hover:border-[#02F6F8]/30 rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_15px_35px_rgba(2,246,248,0.06)] group"
-              >
-              <div>
-                {/* Top Card Image with Frosted Play Button */}
-                <div className="relative w-full aspect-[16/11] rounded-xl sm:rounded-2xl overflow-hidden bg-[#040e1a] mb-5">
-                  <Image
-                    src={ep.image}
-                    alt={ep.title}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    style={{ objectPosition: ep.objectPosition }}
-                  />
-                  {/* Frosted Glass Play Button on Image */}
-                  <button
-                    type="button"
-                    onClick={() => togglePlay(ep.id)}
-                    aria-label={playingId === ep.id ? "Pause episode" : "Play episode"}
-                    className="absolute inset-0 m-auto w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-lg hover:scale-110 hover:bg-[#02F6F8]/25 hover:border-[#02F6F8]/70 active:scale-95 transition-all duration-300 cursor-pointer"
-                  >
-                    {playingId === ep.id ? (
-                      <Pause className="w-4 h-4 fill-white text-white" />
-                    ) : (
-                      <Play className="w-4 h-4 fill-white text-white ml-0.5" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Metadata Tags */}
-                <div className="flex items-center gap-3 text-xs mb-3">
-                  <span className="text-[#02F6F8] font-bold tracking-wider">{ep.episode}</span>
-                  <span className="text-[#8fa7be]">{ep.type}</span>
-                  <span className="text-[#8fa7be]">{ep.duration}</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-2 group-hover:text-[#02F6F8] transition-colors leading-snug">
-                  {ep.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-xs sm:text-[13px] text-[#8fa7be] leading-relaxed mb-6">
-                  {ep.description}
-                </p>
-              </div>
-
-              {/* Bottom Player & Info Area */}
-              <div className="pt-4 border-t border-white/[0.08]">
-                {/* Play row with SoundWave */}
-                <div className="flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={() => togglePlay(ep.id)}
-                    className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-white hover:text-[#02F6F8] transition-colors cursor-pointer"
-                  >
-                    <span className="w-8 h-8 rounded-full bg-[#02F6F8] flex items-center justify-center text-[#020813] shadow-[0_0_15px_rgba(2,246,248,0.5)] hover:scale-105 active:scale-95 transition-transform">
-                      {playingId === ep.id ? (
-                        <Pause className="w-3.5 h-3.5 fill-[#020813] text-[#020813]" />
-                      ) : (
-                        <Play className="w-3.5 h-3.5 fill-[#020813] text-[#020813] ml-0.5" />
-                      )}
-                    </span>
-                    <span>{playingId === ep.id ? "Pause Episode" : "Play Episode"}</span>
-                  </button>
-
-                  <SoundWave isPlaying={playingId === ep.id} />
-                </div>
-
-                {/* Guest name & role */}
-                <div className="mt-4 flex items-center justify-between text-[11px] sm:text-xs text-[#6e859b]">
-                  <span>{ep.guest}</span>
-                  <span>{ep.role}</span>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-        </div>
-
       </div>
     </section>
   );
