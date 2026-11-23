@@ -351,7 +351,7 @@ export default function Podcast() {
   }, [paused, next, total]);
 
   return (
-    <section className="relative w-full bg-[#02121c] text-white py-6 sm:py-10 lg:py-12 overflow-hidden">
+    <section className="relative w-full bg-[#02121c] text-white pt-6 sm:pt-10 lg:pt-12 pb-1 sm:pb-2 overflow-hidden">
       {/* ---------------- ATMOSPHERIC GRADIENTS (EXACT TO REFERENCE SCREENSHOT) ---------------- */}
       {/* 1. Base dark teal wash across entire section */}
       <div
@@ -534,12 +534,12 @@ export default function Podcast() {
               </div>
 
               {/* Arrows (bottom-right) */}
-              <div className="mt-5 flex items-center justify-end gap-2.5">
+              <div className="mt-2 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={prev}
                   aria-label="Previous episode"
-                  className="w-10 h-10 rounded-full border border-white/20 text-white flex items-center justify-center hover:border-[#02F6F8] hover:text-[#02F6F8] active:scale-95 transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-full border border-white/20 text-white flex items-center justify-center hover:border-[#02F6F8] hover:text-[#02F6F8] active:scale-95 transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -547,7 +547,7 @@ export default function Podcast() {
                   type="button"
                   onClick={next}
                   aria-label="Next episode"
-                  className="w-10 h-10 rounded-full border border-white/20 text-white flex items-center justify-center hover:border-[#02F6F8] hover:text-[#02F6F8] active:scale-95 transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-full border border-white/20 text-white flex items-center justify-center hover:border-[#02F6F8] hover:text-[#02F6F8] active:scale-95 transition-colors cursor-pointer"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </button>
