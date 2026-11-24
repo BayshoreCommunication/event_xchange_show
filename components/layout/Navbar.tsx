@@ -27,6 +27,24 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // Close the mobile menu when the page changes
+    useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [pathname]);
+
+    // While the mobile menu is open: lock page scroll, close on Escape
+    useEffect(() => {
+        if (!mobileMenuOpen) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileMenuOpen(false);
+        window.addEventListener("keydown", onKey);
+        return () => {
+            document.body.style.overflow = prev;
+            window.removeEventListener("keydown", onKey);
+        };
+    }, [mobileMenuOpen]);
+
     const navLinks = [
         { name: "The show", href: "/#the-show" },
         { name: "Episodes", href: "/episodes" },
@@ -36,6 +54,13 @@ export default function Navbar() {
 
     return (
         <header className="sticky top-0 z-50 w-full transition-all duration-300">
+            {/* Dim the page behind the open mobile menu; tap to close */}
+            <div
+                onClick={() => setMobileMenuOpen(false)}
+                aria-hidden="true"
+                className={`md:hidden fixed inset-0 -z-10 bg-black/60 transition-opacity duration-300 ${mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            />
+
             {/* ---------------- TOP ANNOUNCEMENT BAR ---------------- */}
             <div className="w-full bg-white py-1.5 sm:py-2 px-4 text-center border-b border-gray-100">
                 <p className="text-xs sm:text-[13px] md:text-sm font-semibold text-[#0085F8] tracking-tight">
@@ -45,7 +70,7 @@ export default function Navbar() {
 
             {/* ---------------- MAIN NAVBAR ---------------- */}
             <nav
-                className={`w-full bg-[#030A16] transition-colors duration-300 ${scrolled ? "bg-[#030A16]/95 backdrop-blur-md shadow-lg shadow-black/20" : ""
+                className={`relative w-full bg-[#030A16] transition-colors duration-300 ${scrolled ? "bg-[#030A16]/95 backdrop-blur-md shadow-lg shadow-black/20" : ""
                     }`}
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,6 +128,8 @@ export default function Navbar() {
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
                                 aria-label="Toggle Navigation Menu"
+                                aria-expanded={mobileMenuOpen}
+                                aria-controls="mobile-menu"
                             >
                                 {mobileMenuOpen ? (
                                     <X className="w-6 h-6 text-[#02F6F8]" />
@@ -115,8 +142,10 @@ export default function Navbar() {
                 </div>
 
                 {/* ---------------- MOBILE DRAWER MENU ---------------- */}
+                {/* Floats over the page instead of pushing it down */}
                 <div
-                    className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden border-t border-white/10 bg-[#030A16]/98 backdrop-blur-xl ${mobileMenuOpen ? "max-h-96 opacity-100 py-6" : "max-h-0 opacity-0 py-0"
+                    id="mobile-menu"
+                    className={`md:hidden absolute left-0 right-0 top-full max-h-[calc(100dvh-7rem)] overflow-y-auto border-t border-white/10 bg-[#030A16] shadow-2xl shadow-black/50 py-6 transition-all duration-300 ease-in-out ${mobileMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible pointer-events-none"
                         }`}
                 >
                     <div className="px-5 space-y-4">
