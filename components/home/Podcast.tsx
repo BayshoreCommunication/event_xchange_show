@@ -4,8 +4,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Pause, Zap, ArrowLeft, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 
 const PODCAST_TITLE_SEGMENTS: readonly TypingSegment[] = [
   { text: "Hear the " },
@@ -204,7 +205,7 @@ function EpisodeMeta({ ep, size = "md" }: { ep: Episode; size?: "md" | "sm" }) {
     <div
       className={`flex items-center whitespace-nowrap ${
         size === "sm"
-          ? "gap-3 text-[11px] sm:text-xs"
+          ? "gap-3 text-xs sm:text-[13px]"
           : "gap-3 sm:gap-4 text-xs sm:text-[13px]"
       }`}
     >
@@ -291,6 +292,8 @@ export default function Podcast() {
   const [animate, setAnimate] = useState(true);
   const [step, setStep] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Only auto-advance while the slider is on screen
+  const inView = useInView(trackRef);
   const touchStartX = useRef<number | null>(null);
 
   // Measure one card + gap so the track moves exactly one card per step
@@ -342,16 +345,16 @@ export default function Podcast() {
 
   // Autoplay: advance one card at a time; pauses on hover/touch/focus, hidden tab and reduced motion
   useEffect(() => {
-    if (paused || total < 2) return;
+    if (paused || !inView || total < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = window.setInterval(() => {
       if (!document.hidden) next();
     }, AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [paused, next, total]);
+  }, [paused, inView, next, total]);
 
   return (
-    <section className="relative w-full bg-[#02121c] text-white pt-6 sm:pt-10 lg:pt-12 pb-1 sm:pb-2 overflow-hidden">
+    <section id="episodes" className="relative w-full bg-[#02121c] text-white pt-6 sm:pt-10 lg:pt-12 pb-1 sm:pb-2 overflow-hidden">
       {/* ---------------- ATMOSPHERIC GRADIENTS (EXACT TO REFERENCE SCREENSHOT) ---------------- */}
       {/* 1. Base dark teal wash across entire section */}
       <div
@@ -427,38 +430,30 @@ export default function Podcast() {
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
               className="mt-5 sm:mt-6 text-sm sm:text-[15px] text-[#8fa7be] leading-relaxed max-w-lg mx-auto xl:mx-0"
             >
-              Come for someone else&apos;s story. Leave with a fresh perspective on your own work.
-              For corporate and association planners, early-career professionals and seasoned
-              leaders alike. Each episode pairs a real person with a real decision — and something
-              worth taking back to your next program. An independent show, not a vendor pitch
-              dressed as a podcast.
+              Come for someone else&apos;s story. Leave with a fresh perspective. Each episode
+              pairs a real person with a real decision.
             </motion.p>
 
             {/* Action Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
               className="mt-7 sm:mt-8 flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-start gap-3 xl:gap-2.5"
             >
               <Link
-                href="#explore"
+                href="/episodes"
                 className="inline-flex items-center justify-center px-6 xl:px-[18px] py-3 rounded-full text-black font-semibold text-xs sm:text-sm xl:text-[13px] bg-gradient-to-r from-[#02F6F8] to-[#0085F8] hover:shadow-[0_0_25px_rgba(2,246,248,0.7)] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap"
               >
                 Explore the conversations
               </Link>
 
-              <Link
-                href="#suggest"
-                className="inline-flex items-center justify-center px-6 xl:px-[18px] py-3 rounded-full text-white font-medium text-xs sm:text-sm xl:text-[13px] bg-[#041122]/50 border border-white/20 hover:border-[#02F6F8] hover:text-[#02F6F8] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap"
-              >
-                Suggest a guest
-              </Link>
+              <SuggestGuestButton className="inline-flex items-center justify-center px-6 xl:px-[18px] py-3 rounded-full text-white font-medium text-xs sm:text-sm xl:text-[13px] bg-[#041122]/50 border border-solid border-white/20 hover:border-[#02F6F8] hover:text-[#02F6F8] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap cursor-pointer" />
             </motion.div>
           </div>
 
@@ -467,7 +462,7 @@ export default function Podcast() {
           <motion.div
             initial={{ opacity: 0, x: 140 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, margin: "-60px" }}
+            viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="min-w-0 xl:mr-[calc(-1*max(0px,(100vw_-_80rem)/2))]"
           >

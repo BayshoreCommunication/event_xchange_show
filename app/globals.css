@@ -541,3 +541,41 @@ button[data-color="primary"],
     animation: none;
   }
 }
+
+/* Sound-wave bars on podcast cards / player (components/podcast/Wave.tsx) */
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Hero equalizer bars (components/home/Hero3.tsx) — CSS so it runs on the compositor */
+.eq-wave-bar {
+  animation-name: eq-wave;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+
+@keyframes eq-wave {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Respect "reduce motion" for the looping decorations */
+@media (prefers-reduced-motion: reduce) {
+  .eq-wave-bar,
+  [class*="animate-[eq"] {
+    animation: none !important;
+  }
+}

@@ -3,17 +3,21 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
+import { PODCAST_CONFIG } from "data/podcast";
+
+type FooterLink = { name: string; href: string; external?: boolean; suggest?: boolean };
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
-    const footerSections = [
+    const footerSections: { title: string; links: FooterLink[] }[] = [
         {
             title: "The Show",
             links: [
-                { name: "Episodes", href: "#episodes" },
-                { name: "Hosts", href: "#hosts" },
-                { name: "About", href: "#about" },
+                { name: "Episodes", href: "/episodes" },
+                { name: "Hosts", href: "/#hosts" },
+                { name: "About", href: "/#the-show" },
             ],
         },
         {
@@ -22,14 +26,17 @@ export default function Footer() {
                 { name: "Apple Podcasts", href: "https://podcasts.apple.com", external: true },
                 { name: "Spotify", href: "https://spotify.com", external: true },
                 { name: "Youtube", href: "https://youtube.com", external: true },
+                { name: "Amazon Music", href: "https://music.amazon.com", external: true },
+                { name: "Newsletter", href: "/subscribe" },
             ],
         },
         {
             title: "Connect",
             links: [
-                { name: "Be a guest", href: "#be-a-guest" },
+                { name: "Be a guest", href: "/be-a-guest" },
+                { name: "Suggest a guest", href: "#", suggest: true },
                 { name: "Linkedin", href: "https://linkedin.com", external: true },
-                { name: "Contact", href: "#contact" },
+                { name: "Contact", href: `mailto:${PODCAST_CONFIG.contactEmail}` },
             ],
         },
     ];
@@ -62,6 +69,11 @@ export default function Footer() {
                                 <ul className="space-y-2.5 sm:space-y-3">
                                     {section.links.map((link) => (
                                         <li key={link.name}>
+                                            {link.suggest ? (
+                                                <SuggestGuestButton className="text-sm sm:text-[15px] text-gray-300 hover:text-white transition-colors duration-200 inline-block py-0.5 cursor-pointer text-left">
+                                                    {link.name}
+                                                </SuggestGuestButton>
+                                            ) : (
                                             <Link
                                                 href={link.href}
                                                 target={link.external ? "_blank" : undefined}
@@ -70,6 +82,7 @@ export default function Footer() {
                                             >
                                                 {link.name}
                                             </Link>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>

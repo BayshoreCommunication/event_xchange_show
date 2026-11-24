@@ -4,10 +4,14 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const pathname = usePathname();
+    // Highlight the menu item for the page you are on
+    const isActive = (href: string) => !href.includes("#") && pathname.startsWith(href);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -18,15 +22,16 @@ export default function Navbar() {
             }
         };
 
-        window.addEventListener("scroll", handleScroll);
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     const navLinks = [
-        { name: "The show", href: "#the-show" },
-        { name: "Episodes", href: "#episodes" },
-        { name: "Hosts", href: "#hosts" },
-        { name: "Be a guest", href: "#be-a-guest" },
+        { name: "The show", href: "/#the-show" },
+        { name: "Episodes", href: "/episodes" },
+        { name: "Hosts", href: "/#hosts" },
+        { name: "Be a guest", href: "/be-a-guest" },
     ];
 
     return (
@@ -65,10 +70,11 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-sm lg:text-[15px] font-medium text-gray-200 hover:text-white transition-colors duration-200 tracking-wide relative group py-1"
+                                    aria-current={isActive(link.href) ? "page" : undefined}
+                                    className={`text-sm lg:text-[15px] font-medium hover:text-white transition-colors duration-200 tracking-wide relative group py-1 ${isActive(link.href) ? "text-white" : "text-gray-200"}`}
                                 >
                                     {link.name}
-                                    <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-[#02F6F8] to-[#0085F8] transition-all duration-300 group-hover:w-full" />
+                                    <span className={`absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[#02F6F8] to-[#0085F8] transition-all duration-300 group-hover:w-full ${isActive(link.href) ? "w-full" : "w-0"}`} />
                                 </Link>
                             ))}
                         </div>
@@ -76,7 +82,7 @@ export default function Navbar() {
                         {/* Desktop CTA Button */}
                         <div className="hidden md:flex items-center">
                             <Link
-                                href="#listen-now"
+                                href="/subscribe#listen"
                                 className="inline-flex items-center justify-center px-7 py-2.5 rounded-full text-black font-semibold text-sm lg:text-[15px] bg-gradient-to-r from-[#02F6F8] to-[#0085F8] hover:shadow-[0_0_25px_rgba(2,246,248,0.7)] hover:scale-105 active:scale-95 transition-all duration-300"
                             >
                                 Listen Now
@@ -86,7 +92,7 @@ export default function Navbar() {
                         {/* Mobile Controls */}
                         <div className="flex md:hidden items-center gap-3">
                             <Link
-                                href="#listen-now"
+                                href="/subscribe#listen"
                                 className="inline-flex items-center justify-center px-4 py-1.5 rounded-full text-black font-semibold text-xs bg-gradient-to-r from-[#02F6F8] to-[#0085F8] shadow-[0_0_15px_rgba(2,246,248,0.4)]"
                             >
                                 Listen Now
@@ -127,7 +133,7 @@ export default function Navbar() {
 
                         <div className="pt-2">
                             <Link
-                                href="#listen-now"
+                                href="/subscribe#listen"
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full text-black font-semibold text-sm bg-gradient-to-r from-[#02F6F8] to-[#0085F8] shadow-[0_0_20px_rgba(2,246,248,0.5)] active:scale-95 transition-all duration-300"
                             >

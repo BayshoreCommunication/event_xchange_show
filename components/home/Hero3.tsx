@@ -38,9 +38,8 @@ const EQ_WAVE_DURATION = 4.2;
 const EQ_WAVE_STAGGER = 0.22;
 
 /** Identical motion for every bar — only the delay differs, so a single
- * pulse travels across the row. repeatType "mirror" plays the wave
- * forward, then reverses it, so bars grow big on the way out and
- * shrink small again on the way back. */
+ * pulse travels across the row. The motion itself is a CSS animation
+ * (.eq-wave-bar in globals.css) so it runs on the GPU, not in JavaScript. */
 const EQ_SCALEY: readonly number[] = [0.4, 1.0, 0.4];
 
 const EQ_BAR_COUNT = 13;
@@ -61,20 +60,14 @@ export default function Hero3() {
   const renderEqualizerBars = (bars: readonly EqualizerBarConfig[]) => (
     <>
       {bars.map((bar) => (
-        <motion.div
+        <div
           key={bar.id}
-          style={{ height: `${bar.heightPercent}%` }}
-          animate={{
-            scaleY: [...bar.scaleY],
+          style={{
+            height: `${bar.heightPercent}%`,
+            animationDuration: `${bar.duration}s`,
+            animationDelay: `${bar.delay}s`,
           }}
-          transition={{
-            duration: bar.duration,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-            delay: bar.delay,
-          }}
-          className="origin-bottom w-3 sm:w-4 md:w-5 lg:w-6 xl:w-7 2xl:w-8 rounded-full bg-gradient-to-t from-[#030a16]/0 via-[#0b3f66]/45 to-[#1178b4]/70 blur-[0.5px]"
+          className="eq-wave-bar origin-bottom w-3 sm:w-4 md:w-5 lg:w-6 xl:w-7 2xl:w-8 rounded-full bg-gradient-to-t from-[#030a16]/0 via-[#0b3f66]/45 to-[#1178b4]/70 blur-[0.5px]"
         />
       ))}
     </>
@@ -82,6 +75,7 @@ export default function Hero3() {
 
   return (
     <section
+      id="the-show"
       aria-label="Hero: The Event XChange Show"
       className="relative w-full bg-[#030A16] overflow-hidden text-white"
     >
@@ -149,12 +143,12 @@ export default function Hero3() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.4 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
               className="mt-7 sm:mt-9 lg:mt-11 flex flex-wrap items-center justify-center lg:justify-start gap-3.5 sm:gap-4"
             >
               <Link
-                href="#explore"
+                href="/episodes"
                 aria-label="Explore the podcast conversations"
                 className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-[#012232] font-semibold text-xs sm:text-[13px] md:text-sm bg-gradient-to-r from-[#00E5FF] to-[#00C2FF] hover:from-[#00F0FF] hover:to-[#00D5F8] hover:shadow-[0_0_25px_rgba(0,229,255,0.6)] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
               >
@@ -162,11 +156,11 @@ export default function Hero3() {
               </Link>
 
               <Link
-                href="#suggest"
-                aria-label="Suggest a guest for the podcast"
+                href="/be-a-guest"
+                aria-label="Pitch yourself or a colleague as a guest"
                 className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
               >
-                Suggest a guest
+                Pitch yourself or a colleague
               </Link>
             </motion.div>
           </div>
@@ -176,7 +170,7 @@ export default function Hero3() {
             <motion.div
               initial={{ opacity: 0, y: 70, scale: 0.94 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: false, amount: 0.4 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 1.0, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-[340px] sm:max-w-[460px] lg:max-w-[540px] xl:max-w-[600px]"
             >
@@ -205,7 +199,7 @@ export default function Hero3() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  viewport={{ once: false, amount: 0.3 }}
+                  viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 1.0, ease: "easeOut" }}
                   className="w-full h-full flex items-end gap-2 sm:gap-2.5 md:gap-3.5 lg:gap-4 xl:gap-5 opacity-45 sm:opacity-50 lg:opacity-60"
                 >
@@ -217,7 +211,7 @@ export default function Hero3() {
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.4 }}
+                viewport={{ once: true, amount: 0.4 }}
                 transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 w-full aspect-[632/408]"
               >

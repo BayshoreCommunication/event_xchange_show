@@ -5,10 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
+import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 
 const CONVERSATION_TITLE_SEGMENTS: readonly TypingSegment[] = [
   { text: "Two seats.", lineBreak: true },
-  { text: "One honest", lineBreak: true },
+  { text: "One real", lineBreak: true },
   {
     text: "conversation.",
     className: "bg-gradient-to-r from-[#00F0FF] via-[#00C4FB] to-[#0085F8] bg-clip-text text-transparent",
@@ -50,7 +51,8 @@ export default function Conversation() {
 
     return (
         <section
-            aria-label="Conversation: Two seats. One honest conversation."
+            id="hosts"
+            aria-label="Conversation: Two seats. One real conversation."
             className="relative w-full bg-[#030A16] text-white py-6 sm:py-10 lg:py-12 overflow-hidden"
         >
             {/* ---------------- ATMOSPHERIC BACKGROUND GLOWS ---------------- */}
@@ -111,7 +113,7 @@ export default function Conversation() {
                                 as="h2"
                                 segments={CONVERSATION_TITLE_SEGMENTS}
                                 speedMs={32}
-                                ariaLabel="Two seats. One honest conversation."
+                                ariaLabel="Two seats. One real conversation."
                                 className="text-[34px] sm:text-[44px] md:text-[50px] lg:text-[52px] xl:text-[58px] font-extrabold text-white leading-[1.08] tracking-[-0.03em]"
                             />
 
@@ -119,40 +121,35 @@ export default function Conversation() {
                             <motion.p
                                 initial={{ opacity: 0, y: 15 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: false }}
+                                viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                                 className="mt-5 sm:mt-7 text-xs sm:text-[13px] md:text-sm text-[#94a9bf] leading-relaxed max-w-[460px] mx-auto lg:mx-0"
                             >
-                                Experienced colleagues, not keynote speakers. Our hosts know the pressures, moving
-                                parts, and last-minute decisions that come with planning an event. They bring that
-                                experience to every conversation, asking the questions planners actually want
-                                answered—from managing tight budgets and working with production teams to handling
-                                unexpected challenges.
+                                Our hosts know the pressures, moving parts, and last-minute decisions that come
+                                with managing events. They bring that experience to every conversation, asking the
+                                questions event professionals actually want answered.
                             </motion.p>
 
                             {/* CTA Buttons */}
                             <motion.div
                                 initial={{ opacity: 0, y: 15 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: false }}
+                                viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
                                 className="mt-7 sm:mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4"
                             >
                                 <Link
-                                    href="#episodes"
+                                    href="/episodes"
                                     aria-label="Explore the conversations"
                                     className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-[#012232] font-semibold text-xs sm:text-[13px] md:text-sm bg-gradient-to-r from-[#00E5FF] to-[#00C2FF] hover:from-[#00F0FF] hover:to-[#00D5F8] hover:shadow-[0_0_25px_rgba(0,229,255,0.6)] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
                                 >
                                     Explore the conversations
                                 </Link>
 
-                                <Link
-                                    href="#suggest"
+                                <SuggestGuestButton
                                     aria-label="Suggest a guest for the conversation"
-                                    className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
-                                >
-                                    Suggest a guest
-                                </Link>
+                                    className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-solid border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap cursor-pointer"
+                                />
                             </motion.div>
                         </div>
 
@@ -166,7 +163,7 @@ export default function Conversation() {
                                         key={host.id}
                                         initial={{ opacity: 0, y: 20 }}
                                         whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: false }}
+                                        viewport={{ once: true }}
                                         transition={{ duration: 0.6, delay: host.id * 0.15, ease: [0.22, 1, 0.36, 1] }}
                                         role="button"
                                         tabIndex={0}

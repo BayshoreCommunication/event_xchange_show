@@ -97,15 +97,15 @@ export default function Newsletter() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: false }}
+                            viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                             className="w-full max-w-[500px] flex flex-col items-center lg:items-start"
                         >
                             {/* Explanatory description */}
-                            <p className="text-xs sm:text-[13px] md:text-sm text-gray-200 leading-relaxed text-center lg:text-left">
-                                One useful idea from each week&apos;s episode, followed
+                            <p className="text-base sm:text-lg md:text-xl text-gray-200 leading-relaxed text-center lg:text-left">
+                                One useful idea from each episode, followed
                                 <br className="hidden sm:inline" />
-                                {" "}by a clear invitation to listen. That&apos;s it.
+                                {" "}by a clear invitation to listen.
                             </p>
 
                             {/* Email Subscription Form Pill */}
@@ -147,7 +147,7 @@ export default function Newsletter() {
                             </form>
 
                             {/* Disclaimer / reassurance below input */}
-                            <p className="mt-3 text-[11px] sm:text-xs text-[#6e859b] text-center lg:text-left">
+                            <p className="mt-3 text-xs sm:text-[13px] text-[#6e859b] text-center lg:text-left">
                                 No sales follow-ups. Unsubscribe anytime.
                             </p>
                         </motion.div>
