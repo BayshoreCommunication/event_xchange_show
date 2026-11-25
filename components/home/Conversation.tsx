@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
-import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 
 const CONVERSATION_TITLE_SEGMENTS: readonly TypingSegment[] = [
   { text: "Two seats.", lineBreak: true },
@@ -146,10 +145,13 @@ export default function Conversation() {
                                     Explore the conversations
                                 </Link>
 
-                                <SuggestGuestButton
-                                    aria-label="Suggest a guest for the conversation"
-                                    className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-solid border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap cursor-pointer"
-                                />
+                                <Link
+                                    href="/be-a-guest#pitch"
+                                    aria-label="Pitch yourself or a colleague as a guest"
+                                    className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-solid border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
+                                >
+                                    Pitch yourself or a colleague
+                                </Link>
                             </motion.div>
                         </div>
 

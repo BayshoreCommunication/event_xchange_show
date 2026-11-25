@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Play, Pause, Zap, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { TypingHeading, TypingSegment } from "components/ui/TypingTitle";
-import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 
 const PODCAST_TITLE_SEGMENTS: readonly TypingSegment[] = [
   { text: "Hear the " },
@@ -444,7 +443,7 @@ export default function Podcast() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
-              className="mt-7 sm:mt-8 flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-start gap-3 xl:gap-2.5"
+              className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center xl:justify-start gap-3 xl:gap-2.5"
             >
               <Link
                 href="/episodes"
@@ -453,7 +452,12 @@ export default function Podcast() {
                 Explore the conversations
               </Link>
 
-              <SuggestGuestButton className="inline-flex items-center justify-center px-6 xl:px-[18px] py-3 rounded-full text-white font-medium text-xs sm:text-sm xl:text-[13px] bg-[#041122]/50 border border-solid border-white/20 hover:border-[#02F6F8] hover:text-[#02F6F8] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap cursor-pointer" />
+              <Link
+                href="/be-a-guest#pitch"
+                className="inline-flex items-center justify-center px-6 xl:px-[18px] py-3 rounded-full text-white font-medium text-xs sm:text-sm xl:text-[13px] bg-[#041122]/50 border border-solid border-white/20 hover:border-[#02F6F8] hover:text-[#02F6F8] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 whitespace-nowrap"
+              >
+                Pitch yourself or a colleague
+              </Link>
             </motion.div>
           </div>
 

@@ -17,7 +17,6 @@ import {
 } from "data/podcast";
 import { usePlayer } from "components/podcast/AudioPlayerProvider";
 import EpisodeCard, { PlayDot } from "components/podcast/EpisodeCard";
-import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 import SubscribeInline from "components/podcast/SubscribeInline";
 import PageBackdrop from "components/podcast/PageBackdrop";
 import Reveal from "components/podcast/Reveal";
@@ -429,9 +428,8 @@ export default function EpisodeDetail({ ep }: { ep: Episode }) {
               The best episodes start with a recommendation from a listener.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3.5">
-              <SuggestGuestButton className={btnPrimary} />
-              <Link href="/be-a-guest" className={btnGhost}>
-                Be a guest
+              <Link href="/be-a-guest#pitch" className={btnPrimary}>
+                Pitch yourself or a colleague
               </Link>
             </div>
           </div>

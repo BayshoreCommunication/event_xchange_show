@@ -7,7 +7,6 @@ import { Search } from "lucide-react";
 import { EPISODES, episodeNumber, episodeUrl, formatDate, isReleased } from "data/podcast";
 import EpisodeCard, { PlayDot, PlayEpisodeButton } from "components/podcast/EpisodeCard";
 import { usePlayer } from "components/podcast/AudioPlayerProvider";
-import { SuggestGuestButton } from "components/podcast/SuggestGuestProvider";
 import SubscribeInline from "components/podcast/SubscribeInline";
 import PageBackdrop from "components/podcast/PageBackdrop";
 import Reveal from "components/podcast/Reveal";
@@ -100,8 +99,7 @@ export default function EpisodesView() {
   };
 
   const stats = released.length
-    ? `${released.length} episode${released.length > 1 ? "s" : ""} · ${minutes} minutes of conversation` +
-      (nextUp ? ` · Next episode ${formatDate(nextUp.date, false)}` : "")
+    ? `Event professionals · ${minutes} minutes of conversation · Production Company`
     : nextUp
     ? `First episode coming ${formatDate(nextUp.date)}`
     : "";
@@ -124,7 +122,9 @@ export default function EpisodesView() {
             <a href="#latest" className={btnPrimary}>
               Hear the latest
             </a>
-            <SuggestGuestButton className={btnGhost} />
+            <Link href="/be-a-guest#pitch" className={btnGhost}>
+              Pitch yourself or a colleague
+            </Link>
           </div>
           {stats && <p className="mt-6 text-[15px] text-[#94a9bf]">{stats}</p>}
         </div>
@@ -274,7 +274,9 @@ export default function EpisodesView() {
                 <button type="button" onClick={clear} className={btnGhost + btnSm}>
                   Clear filters
                 </button>
-                <SuggestGuestButton className={btnPrimary + btnSm} />
+                <Link href="/be-a-guest#pitch" className={btnPrimary + btnSm}>
+                  Pitch yourself or a colleague
+                </Link>
               </div>
             </div>
           )}
@@ -295,7 +297,6 @@ export default function EpisodesView() {
             <Link href="/be-a-guest#pitch" className={btnPrimary}>
               Pitch yourself or a colleague
             </Link>
-            <SuggestGuestButton className={btnGhost} />
           </div>
         </div>
       </section>

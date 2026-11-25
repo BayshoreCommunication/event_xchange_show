@@ -64,7 +64,7 @@ export default function Navbar() {
             {/* ---------------- TOP ANNOUNCEMENT BAR ---------------- */}
             <div className="w-full bg-white py-1.5 sm:py-2 px-4 text-center border-b border-gray-100">
                 <p className="text-xs sm:text-[13px] md:text-sm font-semibold text-[#0085F8] tracking-tight">
-                    New podcast · Premiere November 2024!
+                    New podcast · Premiere 2027!
                 </p>
             </div>
 

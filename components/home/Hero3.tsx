@@ -156,7 +156,7 @@ export default function Hero3() {
               </Link>
 
               <Link
-                href="/be-a-guest"
+                href="/be-a-guest#pitch"
                 aria-label="Pitch yourself or a colleague as a guest"
                 className="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-full text-white font-medium text-xs sm:text-[13px] md:text-sm border border-white/25 hover:border-[#00E5FF]/70 hover:bg-white/[0.06] hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030A16] transition-all duration-300 whitespace-nowrap"
               >
