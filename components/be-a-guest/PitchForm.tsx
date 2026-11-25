@@ -1,14 +1,22 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { GUEST_PROFILES, HEARD_ABOUT_OPTIONS, PODCAST_CONFIG } from "data/podcast";
-import { Field, PillGroup, PreviewNote, SuccessTick, TopicPicker } from "components/forms/FormParts";
-import { useSuggestGuest } from "components/podcast/SuggestGuestProvider";
-import { isEmail, isUrl, isUrlList, readLocal, removeLocal, submitForm, writeLocal } from "lib/forms";
+import { Field, PillGroup, TopicPicker } from "components/forms/FormParts";
+import StatusPopup from "components/forms/StatusPopup";
+import { isEmail, isUrl, isUrlList, readLocal, removeLocal, writeLocal } from "lib/forms";
+import { sendEmail } from "lib/emailjs";
 import { btnGhost, btnPrimary, btnSm, input, inputInvalid } from "lib/ui";
 
 const DRAFT = "exs-draft-pitch";
+
+/* EmailJS account used to deliver guest pitches */
+const EMAILJS_CONFIG = {
+  serviceId: "service_oi8ox0s",
+  templateId: "template_zf1j8jr",
+  publicKey: "PwDu8o_HF3o907vKz",
+};
 const STORY_MAX = 2000;
 const TAKEAWAY_MAX = 400;
 
@@ -80,6 +88,40 @@ function validateStep(step: number, v: Values): Errors {
   return e;
 }
 
+/** Values passed to the EmailJS template. Each one is a {{variable}} there;
+    {{message}} holds the whole pitch for a simple one-field template. */
+function toEmailParams(v: Values): Record<string, string> {
+  const name = `${v.firstName.trim()} ${v.lastName.trim()}`.trim();
+  const fields: [string, string, string][] = [
+    ["first_name", "First name", v.firstName.trim()],
+    ["last_name", "Last name", v.lastName.trim()],
+    ["email", "Email", v.email.trim()],
+    ["role", "Role / title", v.role.trim()],
+    ["organization", "Organization", v.organization.trim()],
+    ["profile", "Describes them", v.profile],
+    ["experience", "Years in events", v.experience.trim()],
+    ["linkedin", "LinkedIn", v.linkedin.trim()],
+    ["podcast_before", "Been on a podcast before", v.podcastBefore],
+    ["podcast_links", "Podcast links", v.podcastBefore === "Yes" ? v.podcastLinks.trim() : ""],
+    ["story", "Story", v.story.trim()],
+    ["takeaway", "Takeaway", v.takeaway.trim()],
+    ["topics", "Topics", v.topics.join(", ")],
+    ["availability", "Could record", v.availability.join(", ")],
+    ["heard", "Heard about the show", v.heard],
+  ];
+  const params: Record<string, string> = {
+    form_type: "Guest pitch",
+    subject: `New guest pitch: ${name}`,
+    name,
+    from_name: name,
+    reply_to: v.email.trim(),
+    submitted_at: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }),
+  };
+  for (const [key, , value] of fields) params[key] = value || "—";
+  params.message = fields.map(([, label, value]) => `${label}: ${value || "—"}`).join("\n\n");
+  return params;
+}
+
 /** The next six months, e.g. "Dec 2026". */
 function nextMonths(count = 6) {
   const d = new Date();
@@ -91,31 +133,42 @@ function nextMonths(count = 6) {
   });
 }
 
+type Popup = { status: "success" | "error"; firstName: string; email: string } | null;
+
 export default function PitchForm() {
-  const { openSuggest } = useSuggestGuest();
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [step, setStep] = useState(1);
   const [months, setMonths] = useState<string[]>([]);
   const [restored, setRestored] = useState(false);
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState<{ firstName: string; email: string; preview: boolean } | null>(null);
+  const [popup, setPopup] = useState<Popup>(null);
+  const closePopup = useCallback(() => setPopup(null), []);
   const formRef = useRef<HTMLFormElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Months and draft are browser-only
+  // Months and draft are browser-only. A saved draft fills the fields back in,
+  // but the form always opens on step 1 so the whole form is visible.
   useEffect(() => {
     setMonths(nextMonths());
-    const d = readLocal<(Values & { _step?: number }) | null>(DRAFT, null);
+    const d = readLocal<(Partial<Values> & { _step?: number }) | null>(DRAFT, null);
     if (d) {
-      const { _step, ...rest } = d;
+      const { _step, ...rest } = d; // older drafts also stored the step
       setValues({ ...EMPTY, ...rest });
-      if (_step && _step > 1) setStep(Math.min(_step, 3));
       setRestored(true);
     }
   }, []);
 
-  const save = (next: Values, s = step) => writeLocal(DRAFT, { ...next, _step: s });
+  const save = (next: Values) => writeLocal(DRAFT, next);
+
+  const startOver = () => {
+    removeLocal(DRAFT);
+    setValues(EMPTY);
+    setErrors({});
+    setRestored(false);
+    setStep(1);
+    rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const set = <K extends keyof Values>(k: K, v: Values[K]) => {
     setValues((prev) => {
@@ -133,7 +186,6 @@ export default function PitchForm() {
 
   const goTo = (n: number) => {
     setStep(n);
-    save(values, n);
     rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -156,13 +208,20 @@ export default function PitchForm() {
       }
     }
     setSending(true);
+    const who = { firstName: values.firstName.trim(), email: values.email.trim() };
     try {
-      const r = await submitForm(PODCAST_CONFIG.formEndpoint, { type: "guest-pitch", ...values });
+      await sendEmail(EMAILJS_CONFIG, toEmailParams(values));
+      // Sent: clear the draft and reset the form behind the popup
       removeLocal(DRAFT);
-      setSent({ firstName: values.firstName.trim(), email: values.email.trim(), preview: r.preview });
-      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    } catch {
-      setErrors({ consent: "Something went wrong. Please try again." });
+      setValues(EMPTY);
+      setErrors({});
+      setRestored(false);
+      setStep(1);
+      setPopup({ status: "success", ...who });
+    } catch (err) {
+      // Not sent: keep everything the visitor typed so they can try again
+      console.error(err);
+      setPopup({ status: "error", ...who });
     } finally {
       setSending(false);
     }
@@ -177,28 +236,6 @@ export default function PitchForm() {
   };
 
   const cls = (k: keyof Values) => input + (errors[k] ? inputInvalid : "");
-
-  if (sent) {
-    return (
-      <div ref={rootRef} className="py-5 text-center">
-        <SuccessTick />
-        <h2 className="text-[28px] sm:text-[32px] font-bold tracking-tight">Pitch received, {sent.firstName}.</h2>
-        <p className="mx-auto mt-3 max-w-[480px] text-base sm:text-lg text-[#a9bccd]">
-          Thanks for sharing your story. We read every pitch and will reply to{" "}
-          <b className="text-white">{sent.email}</b> within two weeks.
-        </p>
-        <div className="mt-7 flex flex-wrap justify-center gap-3.5">
-          <Link href="/episodes" className={btnPrimary}>
-            Listen while you wait
-          </Link>
-          <button type="button" onClick={openSuggest} className={btnGhost}>
-            Suggest a colleague
-          </button>
-        </div>
-        <PreviewNote show={sent.preview} />
-      </div>
-    );
-  }
 
   const review: [string, string][] = [
     ["Name", `${values.firstName} ${values.lastName}`.trim()],
@@ -450,9 +487,70 @@ export default function PitchForm() {
           )}
         </div>
         <p className="text-[13px] text-[#6e859b]">
-          {restored ? "We restored the pitch you started earlier." : "Your progress is saved on this device until you send it."}
+          {restored ? (
+            <>
+              We restored the pitch you started earlier.{" "}
+              <button type="button" onClick={startOver} className="text-[#00F0FF] hover:underline cursor-pointer">
+                Start over
+              </button>
+            </>
+          ) : (
+            "Your progress is saved on this device until you send it."
+          )}
         </p>
       </form>
+
+      <StatusPopup
+        status={popup?.status ?? null}
+        onClose={closePopup}
+        title={popup?.status === "success" ? `Pitch received, ${popup.firstName}!` : "Your pitch didn't send"}
+        message={
+          popup?.status === "success" ? (
+            <>
+              Thanks for sharing your story. We read every pitch and will reply to{" "}
+              <b className="text-white break-all">{popup.email}</b> within two weeks.
+            </>
+          ) : (
+            <>
+              Something went wrong on our side. Your answers are still here, so please try again in a moment, or
+              email us at{" "}
+              <a href={`mailto:${PODCAST_CONFIG.contactEmail}`} className="text-[#00F0FF] hover:underline break-all">
+                {PODCAST_CONFIG.contactEmail}
+              </a>
+              .
+            </>
+          )
+        }
+        actions={
+          popup?.status === "success" ? (
+            <>
+              <Link href="/episodes" className={btnPrimary} data-autofocus>
+                Listen while you wait
+              </Link>
+              <button type="button" onClick={closePopup} className={btnGhost}>
+                Close
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                data-autofocus
+                onClick={() => {
+                  closePopup();
+                  formRef.current?.requestSubmit();
+                }}
+                className={btnPrimary}
+              >
+                Try again
+              </button>
+              <button type="button" onClick={closePopup} className={btnGhost}>
+                Close
+              </button>
+            </>
+          )
+        }
+      />
     </div>
   );
 }

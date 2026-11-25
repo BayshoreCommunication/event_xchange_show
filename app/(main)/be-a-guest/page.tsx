@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 const PERSONAS = [
   {
     img: "/images/be-a-guest/persona-planners.jpg",
-    title: "Corporate & association planners",
+    title: "Event professionals",
     text: "You run the sales kickoffs, annual meetings and conferences, and you've made the hard calls that never show up on stage.",
   },
   {
@@ -29,7 +29,7 @@ const PERSONAS = [
   },
   {
     img: "/images/be-a-guest/persona-leaders.jpg",
-    title: "Seasoned leaders",
+    title: "Production Company",
     text: "Decades in the industry? Share the decision that changed how you plan, produce or lead a team.",
   },
 ];
@@ -134,9 +134,6 @@ export default function BeAGuestPage() {
               </Reveal>
             ))}
           </div>
-          <p className="mx-auto mt-7 max-w-[640px] rounded-xl border border-dashed border-[#202e3d] bg-white/[0.03] px-4 py-3 text-center text-sm sm:text-[15px] text-[#94a9bf]">
-            We don&apos;t charge guests, and we don&apos;t book product demos.
-          </p>
         </div>
       </section>
 

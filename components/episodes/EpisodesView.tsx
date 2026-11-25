@@ -99,7 +99,8 @@ export default function EpisodesView() {
   };
 
   const stats = released.length
-    ? `Event professionals · ${minutes} minutes of conversation · Production Company`
+    ? `${released.length} episode${released.length > 1 ? "s" : ""} · ${minutes} minutes of conversation` +
+      (nextUp ? ` · Next episode ${formatDate(nextUp.date, false)}` : "")
     : nextUp
     ? `First episode coming ${formatDate(nextUp.date)}`
     : "";
